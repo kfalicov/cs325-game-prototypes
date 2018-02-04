@@ -16,17 +16,42 @@ body
 	display: block;
 	height:100%;
 }
-h1
+.header
 {
+	font-size: 24px;
 	padding: 10px;
+	padding-right: 10px;
 	padding-left: 12px;
-	margin-left: -2px;
-	border-bottom: 1px solid white;
-	box-shadow: 0 2px 0 #ff00ee;
+	margin: 0px;
+	margin-right: 0px;
+	left: -2px;
+	border-bottom: 2px solid white;
+	box-shadow: 0 1px 0 #ff00ee;
+	overflow: hidden;
+	width: 440px;
+	float: left;
+	z-index: 10;
+}
+.lineend
+{
+	width: 120.5px;
+	height: 2px;
+	border: 0px;
+	background: white;
+	box-shadow: 0 1px 0 #ff00ee;
+	display: inline-block;
+	margin-right: auto;
+	margin-left: -20.5px;
+	margin-top: 7px;
+	float: left;
+	transform: rotate(-45deg);
+	position: absolute;
 }
 p
 {
-	padding-left: 10px;
+	padding: 10px;
+	margin: 0px;
+	clear: both;
 }
 #readme
 {
@@ -42,8 +67,6 @@ div
 	box-sizing: border-box;
 	padding: 0px;
 	position: relative;
-	left: 0;
-	right: 0;
 }
 .maincontainer
 {
@@ -51,10 +74,33 @@ div
 	display: inline-block;
 	background: #2b024c;
 	margin-left: 7%;
+	padding-right: 60px;
 	height: 100%;
-	width: 93%;
 	border-left: 2px solid #ff00ee;
 	box-shadow: -2px 0 0 white;
+	z-index: 0;
+}
+.sidecontainer
+{
+	float: left;
+	display: inline-block;
+	background: #2b024c;
+	padding: 10px;
+	padding-right: 50px;
+	margin-right: 7%;
+	height: 100%;
+	z-index: 0;
+	position: absolute;
+}
+.previewpane
+{
+	border-top: 1px solid white;
+	background: black;
+	width: 800px;
+	height: 600px;
+	margin-top: 55px;
+	margin-left: 0;
+	margin-right: 0;
 }
 li
 {

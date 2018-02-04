@@ -6,23 +6,39 @@
 	<link rel="stylesheet" type="text/css" href="style.css">
     <title>CS325 Game Select</title>
 <style></style>
-
+<script>
+	function preview(source)
+	{
+		let item =  document.getElementsByClassName('previewpane')[0];
+		item.innerHTML = '<img src=\"assets/'+ source +'\"></img>';
+	}
+	
+	function removepreview()
+	{
+		let item =  document.getElementsByClassName('previewpane')[0];
+		item.innerHTML = '<img></img>';
+	}
+</script>
 </head>
 <body>
 <div class = "maincontainer">
-	<h1>Game Select</h1>
+	<div class="header">Game Select</div><div class="lineend"></div>
+	<br>
 	<p>by Kyle Falicov</p>
 
 	<p>Below is a list of projects I've made in this class:
 
 	<ol class = "gamelist">
-	<li data-hover="02/08/18"><a href="putting-on-ritz"><img src="assets/ritz.png" width="420" height="82"></img>
+	<li data-hover="02/08/18" onmouseover="preview('ritz-full.png')" onmouseout="removepreview()"><a href="putting-on-ritz"><img src="assets/ritz.png" width="420" height="82"></img>
 		<span>Putting on the Ritz</span></a>
 	</li>
-	<li data-hover="02/15/18"><a href="undef"><img src="assets/ritz.png" width="420" height="82"></img>
+	<li data-hover="02/15/18" onmouseover="preview('assets/ritz-full.png')"><a href="javascript:void(0)"><img src="assets/ritz.png" width="420" height="82"></img>
 		<span>Coming Soon!</span></a>
 	</li>
 	</ol>
+</div>
+<div class = "sidecontainer">
+	<div class="previewpane"></div>
 </div>
 
 <!--
