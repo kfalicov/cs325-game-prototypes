@@ -1,3 +1,4 @@
+/* by Kyle Falicov */
 html
 {
 	height: 100%;
@@ -38,7 +39,7 @@ div
 	display: inline-block;
 	background-color: #110a1c;
 	color: #6765b2;
-	margin-left: 48px;
+	margin-left: 7%;
 	padding-left: 10px;
 	height: 100%;
 	width: 100%;
