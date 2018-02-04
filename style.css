@@ -86,7 +86,7 @@ div
 	display: inline-block;
 	background: #2b024c;
 	padding: 10px;
-	padding-right: 50px;
+	padding-right: 80px;
 	margin-right: 7%;
 	height: 100%;
 	z-index: 0;
@@ -104,20 +104,24 @@ div
 }
 li
 {
+	box-sizing: border-box;
 	display: list-item;
-	padding-bottom: 10px;
-	padding-left: 10px;
+	margin-bottom: 10px;
+	padding-right: 0px;
 	position: relative;
 }
 .gamelist
 {
 	list-style: none;
 	counter-reset: li;
-	padding: 0px;
+	padding-left: 10px;
+	padding-right: 10px;
 }
 .gamelist li
 {
+	box-sizing: border-box;
 	counter-increment: step;
+	padding: 0px;
 }
 .gamelist li img
 {
