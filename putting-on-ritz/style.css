@@ -1,0 +1,24 @@
+body
+{
+    color: #777;
+    font-family: "Avenir", Verdana, sans-serif;
+	padding: 0px;
+	display: block;
+}
+#readme
+{
+    margin-top: 10px;
+}
+canvas
+{
+	padding: 0px;
+	margin: 0 auto;
+}
+div
+{
+	box-sizing: border-box;
+	padding: 0px;
+	position: relative;
+	left: 0;
+	right: 0;
+}
