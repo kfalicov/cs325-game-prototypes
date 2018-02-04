@@ -9,12 +9,24 @@ html
 body
 {
     background-color: black;
-	color: #6765b2;
+	color: white;
     font-family: "Avenir", Verdana, sans-serif;
 	padding: 0px;
 	margin: 0px;
 	display: block;
 	height:100%;
+}
+h1
+{
+	padding: 10px;
+	padding-left: 12px;
+	margin-left: -2px;
+	border-bottom: 1px solid white;
+	box-shadow: 0 2px 0 #ff00ee;
+}
+p
+{
+	padding-left: 10px;
 }
 #readme
 {
@@ -37,17 +49,18 @@ div
 {
 	float: left;
 	display: inline-block;
-	background-color: #110a1c;
-	color: #6765b2;
+	background: #2b024c;
 	margin-left: 7%;
-	padding-left: 10px;
 	height: 100%;
-	width: 100%;
+	width: 93%;
+	border-left: 2px solid #ff00ee;
+	box-shadow: -2px 0 0 white;
 }
 li
 {
 	display: list-item;
-	padding-bottom:10px;
+	padding-bottom: 10px;
+	padding-left: 10px;
 	position: relative;
 }
 .gamelist
@@ -69,8 +82,8 @@ li
 	box-sizing: border-box;
 	content: counter(step, decimal);
 	
-	background: #720000;
-	color: white;
+	background: white;
+	color: black;
 	
 	position: absolute;
 	max-width: 32px;
@@ -108,8 +121,10 @@ a span {
 	bottom: 0;
 	float: left;
 	padding: 10px;
+	padding-top: 9px;
 	display: block;
 	width: 100%;
+	border-top: 1px solid white;
 	
 	font-size: 22px;
 	color: white;
