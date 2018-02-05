@@ -34,16 +34,17 @@ body
 }
 .lineend
 {
-	width: 120.5px;
+	width: 200px;
 	height: 2px;
-	border: 0px;
-	background: white;
+	border-bottom: 2px solid white;
+	background: none;
 	box-shadow: 0 1px 0 #ff00ee;
 	display: inline-block;
 	margin-right: auto;
-	margin-left: -20.5px;
-	margin-top: 7px;
+	top: 49.2px;
+	margin-left:-2.1px;
 	float: left;
+	transform-origin: left bottom;
 	transform: rotate(-45deg);
 	position: absolute;
 }
