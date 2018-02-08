@@ -1,0 +1,49 @@
+/* by Kyle Falicov */
+@font-face {
+	font-family: 'Gotham';
+	src: url('assets/Gotham-Book.otf');
+}
+html
+{
+	height: 100%;
+	box-sizing: border-box;
+	padding: 0px;
+	margin: 0px;
+}
+body
+{
+    background-color: white;
+	color: black;
+    font-family: "Avenir", Verdana, sans-serif;
+	padding: 0px;
+	margin: 0px;
+	display: block;
+	height:100%;
+	font-family: 'Gotham', sans-serif;
+
+}
+div
+{
+	box-sizing: border-box;
+	padding: 0px;
+	position: relative;
+	left: 0;
+	right: 0;
+}
+img
+{
+	height:100%;
+	margin: 0 auto;
+	display: block;
+}
+.header
+{
+	height:10%;
+	text-align: center;
+	font-size: 50px;
+	text-shadow: 0px 3px 6px rgba(150, 150, 150, 0.75);
+}
+.tide
+{
+	height:90%;
+}
