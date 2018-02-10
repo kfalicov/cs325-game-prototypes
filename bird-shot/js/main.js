@@ -22,11 +22,11 @@ window.onload = function() {
 	game.state.start('Boot');
 };
 
-var adjective = ["Dirty", "Outlaw", "Mild", "Wild", "Crazy", "Fast", "Quick", "Bad","Mad", "Old", "Waco", "Saddle", "Boots", "Spurs", "Buffalo", "Mexico"];
-var title = ["Doc","Miner","Sheriff","Banker","Rancher","Cowboy", "Kid"];
-var firstname = ["LeBron", "Harry","Clint","McGraw","Sam","Wylde","Wyatt","Buford","Woody","Buchanan"];
-var lastname = ["James", "Eastwood","McGraw","Hill","Brown","Weston","Barnes","Goodman","Woodson","Harrison"];
-var format = ["$f \"$a\"|$n $l", "$f $l", "The $a $t", "\"$a\"|$t $f|$l", "$f|$n \"The $t\" $l|$n"];
+var adjective = ["Dirty","Mild","Wild","Crazy","Fast","Quick","Red","Bad","Mad","Old","Waco","Saddle","Boots","Spurs","Buffalo","Mexico","Scary","Horse","Axe","Western","Arizona","Colorado","Rocky"];
+var title = ["Doc","Miner","Sheriff","Banker","Rancher","Cowboy","Kid","Farmer","Murderer","Bandit","Outlaw","Engineer","Inventor","Chicken","President","Mayor","Bartender","Soldier","Indian","Tanner","Missus","Mistress","Master","Poor Man"];
+var firstname = ["Charlie","Rich","LeBron","Harry","Clint","McGraw","Sam","Wylde","Wyatt","Buford","Woody","Buchanan","Gene","Bart","Billy","Butch","John","George","Nat","Clyde"];
+var lastname = ["Harding","Love","King","Earp","James","Eastwood","McGraw","Hill","Brown","Weston","Barnes","Goodman","Woodson","Harrison","Johnson","Oldman","Washington"];
+var format = ["$f \"$a\"|$n $l", "$f $l|$n", "$f|$n The $a|$n $t", "$a|$t $f|$l", "$f \"The $t\" $l"];
 
 /*
 * global functions used for random name generation
