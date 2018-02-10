@@ -24,8 +24,8 @@ window.onload = function() {
 	game.state.start('Boot');
 };
 
-var adjective = ["Dirty","Mild","Wild","Crazy","Fast","Quick","Red","Bad","Mad","Old","Waco","Scary","Western","Gold","Rocky","Greasy","Mean","Drunk"];
-var nickname = ["Railway","Locomotive","Potato","Wagon","Steel","Saddle","Boots","Buffalo","Mexico","Horse","Axe","Arizona","Colorado","Spurs","Whiskey","Chicken"];
+var adjective = ["Dirty","Mild","Wild","Crazy","Fast","Quick","Red","Bad","Mad","Old","Buffalo","Waco","Scary","Western","Gold","Rocky","Greasy","Mean","Drunk"];
+var nickname = ["Railway","Locomotive","Potato","Wagon","Steel","Saddle","Boots","Mexico","Horse","Axe","Arizona","Colorado","Spurs","Whiskey","Chicken"];
 var title = ["Doc","Miner","Sheriff","Banker","Rancher","Cowboy","Kid","Farmer","Murderer","Bandit","Outlaw","Chicken","Mayor","Bartender","Blacksmith","Indian","Drunkard","Doctor","Beggar"];
 var firstname = ["Charlie","Warren","Owen","Rich","LeBron","Harry","Clint","McGraw","Sam","Wylde","Wyatt","Buford","Woody","Buchanan","Gene","Bart","Billy","Butch","John","George","Nat","Clyde"];
 var lastname = ["Wilder","Harding","Love","Wilson","King","Earp","James","Eastwood","McGraw","Hill","Brown","Weston","Barnes","Goodman","Woodson","Harrison","Johnson","Oldman","Washington"];
