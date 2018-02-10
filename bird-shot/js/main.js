@@ -23,10 +23,10 @@ window.onload = function() {
 };
 
 var adjective = ["Dirty","Mild","Wild","Crazy","Fast","Quick","Red","Bad","Mad","Old","Waco","Saddle","Boots","Spurs","Buffalo","Mexico","Scary","Horse","Axe","Western","Arizona","Colorado","Rocky"];
-var title = ["Doc","Miner","Sheriff","Banker","Rancher","Cowboy","Kid","Farmer","Murderer","Bandit","Outlaw","Engineer","Inventor","Chicken","President","Mayor","Bartender","Soldier","Indian","Tanner","Missus","Mistress","Master","Poor Man"];
+var title = ["Doc","Miner","Sheriff","Banker","Rancher","Cowboy","Kid","Farmer","Murderer","Bandit","Outlaw","Engineer","Inventor","Chicken","President","Mayor","Bartender","Soldier","Indian","Tanner","Missus","Doctor","Mistress","Master","Poor Man"];
 var firstname = ["Charlie","Rich","LeBron","Harry","Clint","McGraw","Sam","Wylde","Wyatt","Buford","Woody","Buchanan","Gene","Bart","Billy","Butch","John","George","Nat","Clyde"];
 var lastname = ["Harding","Love","King","Earp","James","Eastwood","McGraw","Hill","Brown","Weston","Barnes","Goodman","Woodson","Harrison","Johnson","Oldman","Washington"];
-var format = ["$f \"$a\"|$n $l", "$f $l|$n", "$f|$n The $a|$n $t", "$a|$t $f|$l", "$f \"The $t\" $l"];
+var format = ["$f \"$a\"|$n $l", "$f $l|$n", "$f|$n The $a|$n $t", "$t $f|$l", "$f \"The $t\" $l"];
 
 /*
 * global functions used for random name generation
