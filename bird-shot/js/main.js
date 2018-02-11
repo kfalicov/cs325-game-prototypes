@@ -25,9 +25,9 @@ window.onload = function() {
 };
 
 var adjective = ["Dirty","Mild","Wild","Crazy","Fast","Quick","Red","Bad","Mad","Old","Buffalo","Waco","Scary","Western","Gold","Rocky","Greasy","Mean","Drunk"];
-var nickname = ["Railway","Locomotive","Potato","Wagon","Steel","Saddle","Boots","Mexico","Horse","Axe","Arizona","Colorado","Spurs","Whiskey","Chicken"];
+var nickname = ["Railway","Locomotive","Potato","Wagon","Steel","Saddle","Boots","Mexico","Horse","Axe","Arizona","Colorado","Spurs","Whiskey","Chicken","Saloon","Shotgun","Revolver","Bullet","Cow","Dog"];
 var title = ["Doc","Miner","Sheriff","Banker","Rancher","Cowboy","Kid","Farmer","Murderer","Bandit","Outlaw","Chicken","Mayor","Bartender","Blacksmith","Indian","Drunkard","Doctor","Beggar"];
-var firstname = ["Charlie","Warren","Owen","Rich","LeBron","Harry","Clint","McGraw","Sam","Wylde","Wyatt","Buford","Woody","Buchanan","Gene","Bart","Billy","Butch","John","George","Nat","Clyde"];
+var firstname = ["Charlie","Warren","Owen","LeBron","Harry","Clint","McGraw","Sam","Wylde","Wyatt","Buford","Woody","Buchanan","Gene","Billy","Butch","John","George","Nat","Clyde"];
 var lastname = ["Wilder","Harding","Love","Wilson","King","Earp","James","Eastwood","McGraw","Hill","Brown","Weston","Barnes","Goodman","Woodson","Harrison","Johnson","Oldman","Washington"];
 var format = ["$a ($f|$l)", "$f( $l|$n)", "$f $l", "$f the ($a |$n)$t", "\"$g\" ($f|$l)", "$f \"(The $t|$a)\" $l", "$f \"($a |$n)$g\" $l"];
 
@@ -35,7 +35,7 @@ var format = ["$a ($f|$l)", "$f( $l|$n)", "$f $l", "$f the ($a |$n)$t", "\"$g\" 
 * global functions used for random name generation
 */
 function generateName() {
-	let string = format[Math.floor(Math.random() * format.length)];
+	let string = randElement(format);
 	let result = removeOr(string);
 	let count = 0;
 	while(result.includes("|") && count<5){
@@ -50,7 +50,7 @@ function generateName() {
 //goes through the string and removes each set of parentheses at a time. designed to be run multiple times to handle multiple or statements in a string.
 function removeOr(string){
 	let result;
-	if(Math.random() < 0.5 || true){
+	if(Math.random() < 0.5){
 		result = string.replace(/\(.{0,6}\|/, '');
 		result = result.replace(/\)/, '');
 	}
