@@ -13,7 +13,7 @@ window.onload = function() {
 	// the high score if you want.
 	var shared = {};
 	
-	generateName();
+	//generateName();
 
 	game.state.add( 'Boot', GameStates.makeBoot( game ) );
 	game.state.add( 'Preloader', GameStates.makePreloader( game ) );
