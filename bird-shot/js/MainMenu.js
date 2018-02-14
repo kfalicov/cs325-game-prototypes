@@ -1,17 +1,17 @@
 "use strict";
 
-GameStates.makeMainMenu = function( game, shared ) {
+MyGame.MainMenu = function() {
 
 	var music = null;
 	var playButton = null;
     
-    function startGame(pointer) {
+    function startGame() {
 
         //	Ok, the Play Button has been clicked or touched, so let's stop the music (otherwise it'll carry on playing)
         //music.stop();
 
         //	And start the actual game
-        game.state.start('Game');
+        this.scene.start('Play');
 
     }
     
@@ -26,9 +26,10 @@ GameStates.makeMainMenu = function( game, shared ) {
             //music = game.add.audio('titleMusic');
             //music.play();
     
-            game.add.sprite(0, 0, 'titlePage');
-    
-            playButton = game.add.button( 303, 400, 'playButton', startGame, null, 'over', 'out', 'down');
+            this.add.sprite(400, 300, 'titlePage');
+            playButton = this.add.sprite( 400, 400, 'playButton');
+            playButton.setInteractive();
+            playButton.on('pointerdown', startGame, this);
     
         },
     

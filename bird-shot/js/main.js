@@ -2,9 +2,23 @@
 
 window.onload = function() {
 
+	//Phaser 3 uses settings in a var on creation
+	var config = {
+		type: Phaser.AUTO,
+		width: 800,
+		height: 600,
+		backgroundColor: '#000000',
+		parent: 'game',
+	};
+
 	//	Create your Phaser game and inject it into the "game" div.
 	//	We did it in a window.onload event, but you can do it anywhere (requireJS load, anonymous function, jQuery dom ready, - whatever floats your boat)
-	var game = new Phaser.Game( 800, 600, Phaser.AUTO, 'game' );
+	var game = new Phaser.Game(config);
+	game.scene.add('Boot', MyGame.Boot);
+	game.scene.add('Preloader', MyGame.Preloader);
+	game.scene.add('MainMenu', MyGame.MainMenu);
+	game.scene.add('Play', MyGame.Play);
+	game.scene.start('Boot');
 
 	//	Add the States your game has.
 	//	You don't have to do this in the html, it could be done in your Boot state too, but for simplicity I'll keep it here.
@@ -15,13 +29,9 @@ window.onload = function() {
 	
 	//generateName();
 
-	game.state.add( 'Boot', GameStates.makeBoot( game ) );
-	game.state.add( 'Preloader', GameStates.makePreloader( game ) );
-	game.state.add( 'MainMenu', GameStates.makeMainMenu( game, shared ) );
-	game.state.add( 'Game', GameStates.makeGame( game, shared ) );
 
 	//	Now start the Boot state.
-	game.state.start('Boot');
+	//game.state.start('Boot');
 };
 
 var adjective = ["Dirty","Mild","Wild","Crazy","Fast","Quick","Red","Bad","Mad","Old","Buffalo","Waco","Scary","Western","Gold","Rocky","Greasy","Mean","Drunk"];

@@ -1,6 +1,6 @@
 "use strict";
 
-GameStates.makePreloader = function( game ) {
+MyGame.Preloader = function( ) {
 
 	var background = null;
     var preloadBar = null;
@@ -13,22 +13,22 @@ GameStates.makePreloader = function( game ) {
     
             //	These are the assets we loaded in Boot.js
             //	A nice sparkly background and a loading progress bar
-            background = game.add.sprite(0, 0, 'preloaderBackground');
-            preloadBar = game.add.sprite(300, 400, 'preloaderBar');
+            background = this.add.sprite(0, 0, 'preloaderBackground');
+            preloadBar = this.add.sprite(300, 400, 'preloaderBar');
     
             //	This sets the preloadBar sprite as a loader sprite.
             //	What that does is automatically crop the sprite from 0 to full-width
             //	as the files below are loaded in.
-            game.load.setPreloadSprite(preloadBar);
+            //this.load.setPreloadSprite(preloadBar);
     
             //	Here we load the rest of the assets our game needs.
             //	As this is just a Project Template I've not provided these assets, swap them for your own.
-            game.load.image('titlePage', 'assets/menu_bg.png');
-            game.load.atlas('playButton', 'assets/play_button.png', 'assets/play_button.json');
-            game.load.atlas('sprites', 'assets/sprites.png', 'assets/sprites.json');
+            this.load.image('titlePage', 'assets/menu_bg.png');
+            this.load.atlas('playButton', 'assets/play_button.png', 'assets/play_button.json');
+            this.load.atlas('sprites', 'assets/sprites.png', 'assets/sprites.json');
             //game.load.audio('titleMusic', ['assets/Poppers and Prosecco.mp3']);
             //	+ lots of other required assets here
-            game.load.image( 'logo', 'assets/phaser.png' );
+            this.load.image( 'logo', 'assets/phaser.png' );
         },
     
         create: function () {
@@ -55,7 +55,7 @@ GameStates.makePreloader = function( game ) {
                 game.state.start('MainMenu');
             } */
             ready = true;
-            game.state.start('MainMenu');
+            this.scene.start('MainMenu');
         }
     
     };
