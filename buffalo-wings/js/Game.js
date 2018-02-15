@@ -37,6 +37,7 @@ GameStates.makeGame = function( game, shared ) {
     }
 
     function destroySprite (sprite){
+        game.camera.flash(0xffdada, 200);
         sprite.destroy();
         mscore++;
         scoretext.setText(mscore);
@@ -109,6 +110,7 @@ GameStates.makeGame = function( game, shared ) {
     return {
     
         create: function () {
+            game.camera.flash(0xffdada, 200);
             game.stage.backgroundColor="#ddbbbb"
             //  Honestly, just about anything could go here. It's YOUR game after all. Eat your heart out!
             
