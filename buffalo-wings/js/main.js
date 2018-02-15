@@ -5,7 +5,7 @@ window.onload = function() {
 	//	Create your Phaser game and inject it into the "game" div.
 	//	We did it in a window.onload event, but you can do it anywhere (requireJS load, anonymous function, jQuery dom ready, - whatever floats your boat)
 	let aspectratio=16/9;
-	let smartwidth = (window.innerWidth * window.devicePixelRatio)-17;
+	let smartwidth = Math.min(((window.innerWidth * window.devicePixelRatio)-17),1200);
 	let smartheight = smartwidth/aspectratio;
 	var game = new Phaser.Game(smartwidth, smartheight, Phaser.AUTO, 'game' );
 
@@ -14,7 +14,10 @@ window.onload = function() {
 	
 	// An object for shared variables, so that them main menu can show
 	// the high score if you want.
-	var shared = {};
+	var shared = {
+		highscore: 0,
+		lastscore: 0
+	};
 	
 	//generateName();
 
@@ -22,6 +25,7 @@ window.onload = function() {
 	game.state.add( 'Preloader', GameStates.makePreloader( game ) );
 	game.state.add( 'MainMenu', GameStates.makeMainMenu( game, shared ) );
 	game.state.add( 'Game', GameStates.makeGame( game, shared ) );
+	game.state.add( 'GameOver', GameStates.makeGameOver( game, shared ) );
 
 	//	Now start the Boot state.
 	game.state.start('Boot');

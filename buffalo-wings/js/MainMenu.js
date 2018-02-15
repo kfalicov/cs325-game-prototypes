@@ -11,6 +11,7 @@ GameStates.makeMainMenu = function( game, shared ) {
         //music.stop();
 
         //	And start the actual game
+        game.state.add( 'Game', GameStates.makeGame( game, shared ) );
         game.state.start('Game');
 
     }
@@ -31,6 +32,12 @@ GameStates.makeMainMenu = function( game, shared ) {
             console.log(game.width);
             playButton = game.add.button( game.width/2, game.height*2/3, 'playButton', startGame, null, 'over', 'out', 'down');
             playButton.x -= playButton.width/2;
+
+            var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+            var text = game.add.text( game.world.centerX, 15,
+                "Your high score: "+ shared.highscore,
+                style );
+            text.anchor.setTo( 0.5, 0.0 );
         },
     
         update: function () {
