@@ -26,10 +26,11 @@ GameStates.makeMainMenu = function( game, shared ) {
             //music = game.add.audio('titleMusic');
             //music.play();
     
-            game.add.sprite(0, 0, 'titlePage');
-    
-            playButton = game.add.button( 303, 400, 'playButton', startGame, null, 'over', 'out', 'down');
-    
+            let titlebg = game.add.sprite(0, 0, 'titlePage');
+            titlebg.x += (game.width-titlebg.width)/2;
+            console.log(game.width);
+            playButton = game.add.button( game.width/2, game.height*2/3, 'playButton', startGame, null, 'over', 'out', 'down');
+            playButton.x -= playButton.width/2;
         },
     
         update: function () {

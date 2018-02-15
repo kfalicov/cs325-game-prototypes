@@ -15,7 +15,8 @@ GameStates.makeBoot = function( game ) {
             if (game.device.desktop)
             {
                 //  If you have any desktop specific settings, they can go in here
-                game.scale.pageAlignHorizontally = true;
+                game.stage.scale.pageAlignHorizontally = true;
+                //game.stage.scale.refresh();
             }
             else
             {

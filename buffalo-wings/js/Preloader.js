@@ -14,7 +14,10 @@ GameStates.makePreloader = function( game ) {
             //	These are the assets we loaded in Boot.js
             //	A nice sparkly background and a loading progress bar
             background = game.add.sprite(0, 0, 'preloaderBackground');
-            preloadBar = game.add.sprite(300, 400, 'preloaderBar');
+            preloadBar = game.add.sprite( game.width/2, game.height*2/3, 'preloaderBar');
+            background.x += (game.width-background.width)/2;
+            preloadBar.x -= preloadBar.width/2;
+
     
             //	This sets the preloadBar sprite as a loader sprite.
             //	What that does is automatically crop the sprite from 0 to full-width
@@ -28,7 +31,6 @@ GameStates.makePreloader = function( game ) {
             game.load.atlas('sprites', 'assets/sprites.png', 'assets/sprites.json');
             //game.load.audio('titleMusic', ['assets/Poppers and Prosecco.mp3']);
             //	+ lots of other required assets here
-            game.load.image( 'logo', 'assets/phaser.png' );
         },
     
         create: function () {

@@ -43,8 +43,8 @@ MyGame.Play = function( game, shared ) {
 
             
             // Turn on the arcade physics engine for this sprite.
-            this.physics.enable( bouncy, Phaser.Physics.ARCADE );
-            this.physics.enable(chicken, Phaser.Physics.ARCADE);
+            this.physics.add.chicken.setActive();
+            //this.physics.enable(chicken, Phaser.Physics.ARCADE);
             // Make it bounce off of the world bounds.
             chicken.body.collideWorldBounds = true;
             
