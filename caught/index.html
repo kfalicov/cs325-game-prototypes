@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8" />
-	<title>Buffalo Wings</title>
+	<title>Butterfly Catch</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
 
 	<script src="js/phaser.min.js"></script>
@@ -21,32 +21,31 @@
 <body>
 <div id="game" style="width:100%;"></div>
 <div id="readme">
-<h2>Buffalo Wings</h2>
+<h2>Butterfly Catch</h2>
 
 <ul>
 <li><strong>Originality:</strong>
 What is original about your game?<br>
-The game is a chaotic mess of a shooter.
+The game is a puzzle game that involves dividing up butterflies and trapping them.
 </li>
 
 <li><strong>Technical Merit:</strong>
 What is interesting about your game technology?<br>
-My game has lots of RNG, a name generator, and scaling difficulty.
+This game has BMP generated graphics for the "crosshair" as well as a constantly expanding list of wall colliders and bounce physics.
 </li>
 
 <li><strong>Prototype Postmortem:</strong>
 What did you learn from this prototype?<br>
-I learned how to use RegEx in JavaScript, and I learned how to use Phaser v3 (a little)<br>
+I utilized the debug mode as a feature for drawing.  I also learned how to resize the game window while the game is still in play (still buggy at the moment)<br>
 What was the easiest or hardest part of making it?<br>
-The hardest part was spawning in enemies based on a timer, and modifying the spawn speed as the game progressed.  Also difficult was figuring out RegEx to make replaceable strings, and figuring out how to resize the window to match the browser size.
+It was difficult to figure out how to implement the trap mechanism, at first I wanted to create rectangles and sprites, but it ended up with all of this complicated parenting stuff so I just let the debug mode handle rendering, and it ended up being much easier.
 </li>
 
 <li><strong>Prototype Assets:</strong>
 Did you make your prototype assets from scratch? Did you borrow them? Cite your sources here.
 <ul>
-<li>Menu Background: <a href="https://cdn1.epicgames.com/ue/item/HQWesternSaloon_screenshot_01-1920x1080-26bcf4b61083d64e7eebe92b54f21045.png">Unreal Forums</a></li>
-<li>Chicken and accessories: self-made</li>
-<li>Button: Phaser example <a href="https://phaser.io/examples/v2/buttons/action-on-click">Action On Click</a></li>
+<li>Menu Background: <a href="https://thumbs.dreamstime.com/b/full-length-portrait-mature-man-running-catching-butterflies-net-isolated-white-background-32895779.jpg">Stock Image</a></li>
+<li>Butterfly: <a href="https://freeclipartspot.com//storage/upload/butterfly-clipart/butterfly-clipart-8.png">Google Images</a> and photoshop for recoloring</li>
 </ul>
 </li>
 
@@ -55,60 +54,60 @@ Which other game most closely resembles your game? If you are borrowing code fro
 <ul>
 <li>Drawing lines with BitmapData: <a href="http://www.html5gamedevs.com/topic/5395-line-moving/">this forum post</a></li>
 <li>Adding graphics that have collisions: <a href="http://www.html5gamedevs.com/topic/6476-collision-with-gameaddgraphics-and-a-sprite/">this forum post</a>
-<li>Spawning chickens and having them wrap around screen boundaries was from the <a href="https://phaser.io/news/2015/11/asteroids-tutorial">Asteroids tutorial</a></li>
-<li><a href="https://phaser.io/examples/v2/camera/camera-flash">Camera Flash</a></li>
+<li>ScaleManager: <a href="https://phaser.io/docs/2.3.0/Phaser.ScaleManager.html">Phaser Docs</a></li>
+<li>Dynamic scale: <a href="https://stackoverflow.com/questions/32782514/changing-game-size-in-phaser-dynamically">StackOverflow</a></li>
 </ul>
 </li>
 
 <li><strong>High Concept:</strong>
 A one-sentence summary of your game.<br>
-Fight back an army of chickens in the wild west.
+Catch butterflies in the target areas by trapping them in grids.
 </li>
 
 <li><strong>Theme:</strong>
 State which of the Storymatic themes you used.<br>
-Chicken
+Caught!
 </li>
 
 <li><strong>Mandated Variety:</strong>
 State which input, randomness, genre, and play style you used in this prototype.<br>
-Mouse input, clickable buttons. A lot of randomness. Arcade-style shooter. Competitor playstyle, Achiever, Joker.
+Mouse Input, a lot of randomness, puzzle, Collector.
 </li>
 
 <li><strong>Prototype Goal:</strong>
 What game mechanic is this prototype evaluating?<br>
-This prototype is evaluating arcade-style shooter games.
+I wanted to make a challenging real-time puzzle game which relies as much on reflexes as it does awareness.
 </li>
 
 <li><strong>Player Experience Goals:</strong>
 What experience do you want players to have when playing your game?<br>
-I want players to play for long enough to notice the scaling difficulty and attempt to best their own personal scores.
+I want players to trap their butterflies in the wrong spots and get stuck, but become better at dividing the butterflies up and quickly cordoning them off.
 </li>
 
 <li><strong>Gameplay:</strong>
 A paragraph describing the actions the player can perform, the system dynamics, and the core mechanic. Include a concise explanation of the prototype’s inputs and their expected effects (how to play). You can also describe game play that is not in the prototype. You may include mock-up images for parts of the game not in the prototype.<br>
-The player can click on chickens to shoot them. The goal is to keep the amount of chickens below 20, otherwise the town is overrun and the game ends. I initially intended on creating a western-style standoff game that gave players limited ammo, and required hiding behind cover from enemy gunfire.  The complications of those mechanics prevented them from making it into the final game.
+The mouse is the only control. Moving the mouse moves either a vertical or horizontal axis, and clicking will place a "wall" along that axis. After a click, the axis switches from horizontal to vertical or vice versa.  The goal is to trap butterflies in their matching color squares in the field.  Eventually I want to implement scoring or a way to complete levels, this will be done by starting a timer when a butterfly goes over the correct square, and if a certain time elapses it can be considered caught.  I also have to make more precise checks on initial velocity so that the butterfly can't be moving perfectly vertically or horizontally.  Lastly, I might make the wall generation more random than the two axes, and include diagonals or rotation.
 </li>
 
 <li><strong>Strategies:</strong>
 What player strategies do you expect will be effective at playing this game?<br>
-The window resizes on browser resize (and refresh), so a more efficient way to play the game is to have the window smaller, so mouse movements are less drastic.
+My first playtester informed me that you can resize the window to push butterflies around.  Also, if a butterfly is completely trapped you can inch it slowly out by putting walls against it, which push the butterfly past other walls.  Aside from exploits, dividing up the butterflies and patiently assessing the situation before making moves will help.
 </li>
 
 <li><strong>Story/Setting/Premise:</strong>
 A paragraph about the world your game is set in and who the characters are. What makes the game world and its occupants unique and interesting? Do the tokens represent something? If the game has a backstory, mention it here. If the game is abstract, then say so.
 How will the dramatic tension interact with the gameplay tension?<br>
-The game is set in the Wild West, a lawless hovel of dust and criminal activity.  The entire population of this game is chickens, all armed with revolvers.  The characters are all unique looking and have their own names.
+The game is set in the sky, and the focus is on different colored butterflies.  The game is mostly abstract, as the focus is on the puzzle.
 </li>
 
 <li><strong>Target Audience:</strong>
 A single sentence that describes the demographic you're trying to reach.<br>
-The target audience is people around my age.
+I think this game would be more fun for audiences on the younger side.
 </li>
 
 <li><strong>Play Time:</strong>
 How long does your game take to play?<br>
-About 5 minutes, but can go on indefinitely (difficulty scaling does have a cap)
+About 1-2 minutes.
 </li>
 
 </ul>
