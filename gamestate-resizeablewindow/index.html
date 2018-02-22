@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>Buffalo Wings</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+
+	<script src="js/phaser.min.js"></script>
+	<!-- Boot.js must come first since it creates the BasicGame object
+	that stores all the states. -->
+	<script src="js/Boot.js"></script>
+	<script src="js/Preloader.js"></script>
+	<script src="js/MainMenu.js"></script>
+	<script src="js/Game.js"></script>
+	<!-- main.js must come last since it references the other ones. -->
+	<script src="js/main.js"></script>
+
+<style></style>
+
+</head>
+<body>
+<div id="game" style="width:100%;"></div>
+<div id="readme">
+<h2>Buffalo Wings</h2>
+
+<ul>
+<li><strong>Originality:</strong>
+What is original about your game?<br>
+The game is a chaotic mess of a shooter.
+</li>
+
+<li><strong>Technical Merit:</strong>
+What is interesting about your game technology?<br>
+My game has lots of RNG, a name generator, and scaling difficulty.
+</li>
+
+<li><strong>Prototype Postmortem:</strong>
+What did you learn from this prototype?<br>
+I learned how to use RegEx in JavaScript, and I learned how to use Phaser v3 (a little)<br>
+What was the easiest or hardest part of making it?<br>
+The hardest part was spawning in enemies based on a timer, and modifying the spawn speed as the game progressed.  Also difficult was figuring out RegEx to make replaceable strings, and figuring out how to resize the window to match the browser size.
+</li>
+
+<li><strong>Prototype Assets:</strong>
+Did you make your prototype assets from scratch? Did you borrow them? Cite your sources here.
+<ul>
+<li>Menu Background: <a href="https://cdn1.epicgames.com/ue/item/HQWesternSaloon_screenshot_01-1920x1080-26bcf4b61083d64e7eebe92b54f21045.png">Unreal Forums</a></li>
+<li>Chicken and accessories: self-made</li>
+<li>Button: Phaser example <a href="https://phaser.io/examples/v2/buttons/action-on-click">Action On Click</a></li>
+</ul>
+</li>
+
+<li><strong>Prototype Closest Other Game:</strong>
+Which other game most closely resembles your game? If you are borrowing code from a Phaser Example, you must say so here. If you borrow code from elsewhere, you must say so here.
+<ul>
+<li>The code for this example is adapted from the <a href="https://github.com/photonstorm/phaser/tree/v2.6.2/resources/Project%20Templates/Basic">Phaser Basic Project Template</a></li>
+<li>The timer functions were from the example <a href="https://phaser.io/examples/v2/time/custom-timer">Custom Timer</a>
+<li>Spawning chickens and having them wrap around screen boundaries was from the <a href="https://phaser.io/news/2015/11/asteroids-tutorial">Asteroids tutorial</a></li>
+<li><a href="https://phaser.io/examples/v2/camera/camera-flash">Camera Flash</a></li>
+</ul>
+</li>
+
+<li><strong>High Concept:</strong>
+A one-sentence summary of your game.<br>
+Fight back an army of chickens in the wild west.
+</li>
+
+<li><strong>Theme:</strong>
+State which of the Storymatic themes you used.<br>
+Chicken
+</li>
+
+<li><strong>Mandated Variety:</strong>
+State which input, randomness, genre, and play style you used in this prototype.<br>
+Mouse input, clickable buttons. A lot of randomness. Arcade-style shooter. Competitor playstyle, Achiever, Joker.
+</li>
+
+<li><strong>Prototype Goal:</strong>
+What game mechanic is this prototype evaluating?<br>
+This prototype is evaluating arcade-style shooter games.
+</li>
+
+<li><strong>Player Experience Goals:</strong>
+What experience do you want players to have when playing your game?<br>
+I want players to play for long enough to notice the scaling difficulty and attempt to best their own personal scores.
+</li>
+
+<li><strong>Gameplay:</strong>
+A paragraph describing the actions the player can perform, the system dynamics, and the core mechanic. Include a concise explanation of the prototype’s inputs and their expected effects (how to play). You can also describe game play that is not in the prototype. You may include mock-up images for parts of the game not in the prototype.<br>
+The player can click on chickens to shoot them. The goal is to keep the amount of chickens below 20, otherwise the town is overrun and the game ends. I initially intended on creating a western-style standoff game that gave players limited ammo, and required hiding behind cover from enemy gunfire.  The complications of those mechanics prevented them from making it into the final game.
+</li>
+
+<li><strong>Strategies:</strong>
+What player strategies do you expect will be effective at playing this game?<br>
+The window resizes on browser resize (and refresh), so a more efficient way to play the game is to have the window smaller, so mouse movements are less drastic.
+</li>
+
+<li><strong>Story/Setting/Premise:</strong>
+A paragraph about the world your game is set in and who the characters are. What makes the game world and its occupants unique and interesting? Do the tokens represent something? If the game has a backstory, mention it here. If the game is abstract, then say so.
+How will the dramatic tension interact with the gameplay tension?<br>
+The game is set in the Wild West, a lawless hovel of dust and criminal activity.  The entire population of this game is chickens, all armed with revolvers.  The characters are all unique looking and have their own names.
+</li>
+
+<li><strong>Target Audience:</strong>
+A single sentence that describes the demographic you're trying to reach.<br>
+The target audience is people around my age.
+</li>
+
+<li><strong>Play Time:</strong>
+How long does your game take to play?<br>
+About 5 minutes, but can go on indefinitely (difficulty scaling does have a cap)
+</li>
+
+</ul>
+</div>
+</body>
+</html>
