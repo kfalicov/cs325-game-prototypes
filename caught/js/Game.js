@@ -135,7 +135,6 @@ GameStates.makeGame = function( game, shared ) {
         },
 
         update: function () {
-            this.bmd.resize(game.width, game.height);
             this.bmd.clear();
             if(this.axis)
             this.drawX();
