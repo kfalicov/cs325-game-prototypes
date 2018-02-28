@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>Putting on the Ritz</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+
+	<script src="js/phaser.min.js"></script>
+	<!-- Boot.js must come first since it creates the BasicGame object
+	that stores all the states. -->
+	<script src="js/Boot.js"></script>
+	<script src="js/Preloader.js"></script>
+	<script src="js/MainMenu.js"></script>
+	<script src="js/Game.js"></script>
+	<!-- main.js must come last since it references the other ones. -->
+	<script src="js/main.js"></script>
+
+<style></style>
+
+</head>
+<body>
+<div id="game" style="width:100%; max-width:1200px;"></div>
+<div id="readme">
+<h2>Butterfly Catch</h2>
+
+<ul>
+<li><strong>Originality:</strong>
+What is original about your game?<br>
+The game is a puzzle game that involves dividing up butterflies and trapping them.
+</li>
+
+<li><strong>Technical Merit:</strong>
+What is interesting about your game technology?<br>
+This game has BMP generated graphics for the "crosshair" as well as a constantly expanding list of wall colliders and bounce physics.
+</li>
+
+<li><strong>Prototype Postmortem:</strong>
+What did you learn from this prototype?<br>
+I utilized the debug mode as a feature for drawing.  I also learned how to resize the game window while the game is still in play (still buggy at the moment)<br>
+What was the easiest or hardest part of making it?<br>
+It was difficult to figure out how to implement the trap mechanism, at first I wanted to create rectangles and sprites, but it ended up with all of this complicated parenting stuff so I just let the debug mode handle rendering, and it ended up being much easier.
+</li>
+
+<li><strong>Prototype Assets:</strong>
+Did you make your prototype assets from scratch? Did you borrow them? Cite your sources here.
+<ul>
+<li>Menu Background: <a href="https://thumbs.dreamstime.com/b/full-length-portrait-mature-man-running-catching-butterflies-net-isolated-white-background-32895779.jpg">Stock Image</a></li>
+<li>Butterfly: <a href="https://freeclipartspot.com//storage/upload/butterfly-clipart/butterfly-clipart-8.png">Google Images</a> and photoshop for recoloring</li>
+</ul>
+</li>
+
+<li><strong>Prototype Closest Other Game:</strong>
+Which other game most closely resembles your game? If you are borrowing code from a Phaser Example, you must say so here. If you borrow code from elsewhere, you must say so here.
+<ul>
+<li>Drawing lines with BitmapData: <a href="http://www.html5gamedevs.com/topic/5395-line-moving/">this forum post</a></li>
+<li>Adding graphics that have collisions: <a href="http://www.html5gamedevs.com/topic/6476-collision-with-gameaddgraphics-and-a-sprite/">this forum post</a>
+<li>ScaleManager: <a href="https://phaser.io/docs/2.3.0/Phaser.ScaleManager.html">Phaser Docs</a></li>
+<li>Dynamic scale: <a href="https://stackoverflow.com/questions/32782514/changing-game-size-in-phaser-dynamically">StackOverflow</a></li>
+</ul>
+</li>
+
+<li><strong>High Concept:</strong>
+A one-sentence summary of your game.<br>
+Catch butterflies in the target areas by trapping them in grids.
+</li>
+
+<li><strong>Theme:</strong>
+State which of the Storymatic themes you used.<br>
+Caught!
+</li>
+
+<li><strong>Mandated Variety:</strong>
+State which input, randomness, genre, and play style you used in this prototype.<br>
+Mouse Input, a lot of randomness, puzzle, Collector.
+</li>
+
+<li><strong>Prototype Goal:</strong>
+What game mechanic is this prototype evaluating?<br>
+I wanted to make a challenging real-time puzzle game which relies as much on reflexes as it does awareness.
+</li>
+
+<li><strong>Player Experience Goals:</strong>
+What experience do you want players to have when playing your game?<br>
+I want players to trap their butterflies in the wrong spots and get stuck, but become better at dividing the butterflies up and quickly cordoning them off.
+</li>
+
+<li><strong>Gameplay:</strong>
+A paragraph describing the actions the player can perform, the system dynamics, and the core mechanic. Include a concise explanation of the prototype’s inputs and their expected effects (how to play). You can also describe game play that is not in the prototype. You may include mock-up images for parts of the game not in the prototype.<br>
+The mouse is the only control. Moving the mouse moves either a vertical or horizontal axis, and clicking will place a "wall" along that axis. After a click, the axis switches from horizontal to vertical or vice versa.  The goal is to trap butterflies in their matching color squares in the field.  Eventually I want to implement scoring or a way to complete levels, this will be done by starting a timer when a butterfly goes over the correct square, and if a certain time elapses it can be considered caught.  I also have to make more precise checks on initial velocity so that the butterfly can't be moving perfectly vertically or horizontally.  Lastly, I might make the wall generation more random than the two axes, and include diagonals or rotation.
+</li>
+
+<li><strong>Strategies:</strong>
+What player strategies do you expect will be effective at playing this game?<br>
+My first playtester informed me that you can resize the window to push butterflies around.  Also, if a butterfly is completely trapped you can inch it slowly out by putting walls against it, which push the butterfly past other walls.  Aside from exploits, dividing up the butterflies and patiently assessing the situation before making moves will help.
+</li>
+
+<li><strong>Story/Setting/Premise:</strong>
+A paragraph about the world your game is set in and who the characters are. What makes the game world and its occupants unique and interesting? Do the tokens represent something? If the game has a backstory, mention it here. If the game is abstract, then say so.
+How will the dramatic tension interact with the gameplay tension?<br>
+The game is set in the sky, and the focus is on different colored butterflies.  The game is mostly abstract, as the focus is on the puzzle.
+</li>
+
+<li><strong>Target Audience:</strong>
+A single sentence that describes the demographic you're trying to reach.<br>
+I think this game would be more fun for audiences on the younger side.
+</li>
+
+<li><strong>Play Time:</strong>
+How long does your game take to play?<br>
+About 1-2 minutes.
+</li>
+
+</ul>
+</div>
+</body>
+</html>
