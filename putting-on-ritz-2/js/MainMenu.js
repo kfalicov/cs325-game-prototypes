@@ -44,7 +44,7 @@ GameStates.makeMainMenu = function( game, shared ) {
 
             titlebg.x = (game.width-titlebg.width)/2;
             playButton.x = game.width/2 - playButton.width/2;
-            playButton.y = game.height*2/3;
+            playButton.y = game.height*4/5;
 
             //game.scale.setResizeCallback(resize, this);
            // game.scale.onSizeChange.add(resize, this);

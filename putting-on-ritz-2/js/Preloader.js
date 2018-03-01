@@ -27,11 +27,14 @@ GameStates.makePreloader = function( game ) {
             //	Here we load the rest of the assets our game needs.
             //	As this is just a Project Template I've not provided these assets, swap them for your own.
             game.load.image('titlePage', 'assets/menu_bg.png');
+            game.load.image('gameBG', 'assets/background.jpg');
             game.load.atlas('playButton', 'assets/play_button.png', 'assets/play_button.json');
             game.load.atlas('player', 'assets/spritesheet.png', 'assets/sprites.json');
             game.load.image('ball', 'assets/ball.png');
             game.load.image('platform', 'assets/platform.png');
             //game.load.audio('titleMusic', ['assets/Poppers and Prosecco.mp3']);
+            game.load.audio('bounce', 'assets/bounce.mp3');
+            game.load.audio('hit', 'assets/short strike.mp3');
             //	+ lots of other required assets here
         },
     

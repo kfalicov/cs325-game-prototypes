@@ -9,6 +9,7 @@ GameStates.makeGame = function( game, shared ) {
 
     //the input keys
     let jump;
+    let altjump;
     let sprint;
     let crouch;
     let left;
@@ -36,6 +37,8 @@ GameStates.makeGame = function( game, shared ) {
     let aimGraphics;
 
     let oldGraphics;
+    let hitSound;
+    let bounceSound;
 
 
     // a simple multiplier to increase launch power
@@ -159,6 +162,7 @@ GameStates.makeGame = function( game, shared ) {
             ball.body.velocity.x = launchVelocity.x * forceMult;
             ball.body.velocity.y = launchVelocity.y * forceMult;
             ball.body.angularVelocity = 100 * (ball.body.velocity.x + ball.body.velocity.y);
+            hitSound.play();
         }
     }
 
@@ -183,7 +187,10 @@ GameStates.makeGame = function( game, shared ) {
         
         create: function () {
             //set world background
-            game.stage.backgroundColor = '#002560';
+            let bg = game.add.sprite(0,0,'gameBG');
+            bg.anchor.setTo(0.5, 0);
+            bg.x = game.world.centerX;
+            bg.y = 0;
             player = game.add.sprite(100, 200, 'player');
 
             arms = game.add.sprite(0,0,'player');
@@ -194,7 +201,6 @@ GameStates.makeGame = function( game, shared ) {
             player.animations.add('walk', Phaser.Animation.generateFrameNames('walk', 0, 7), 10, true);
 
             game.physics.arcade.enable(player);
-
 
             player.body.setSize(player.width/3, player.height-10, player.width/3, 10);
 
@@ -222,6 +228,7 @@ GameStates.makeGame = function( game, shared ) {
             crouch = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
             left = game.input.keyboard.addKey(Phaser.Keyboard.A);
             right = game.input.keyboard.addKey(Phaser.Keyboard.D);
+            altjump = game.input.keyboard.addKey(Phaser.Keyboard.W);
 
             trajectoryGraphics = game.add.graphics(0, 0);
             //trajectoryGraphics.fixedToCamera = true;
@@ -230,16 +237,21 @@ GameStates.makeGame = function( game, shared ) {
             launchVelocity = new Phaser.Point(0, 0);
 
             for(let i=0;i<10;i++){
-            let temp = game.add.sprite(game.rnd.between(0,800), 100, 'ball');
-            temp.anchor.x = 0.5;
-            temp.anchor.y = 0.5;
-            hittableObjects.add(temp);
-            //ball.position.setTo(player.x+player.width/2-ball.width/2, player.y+player.height-ball.height);
-            temp.body.bounce.set(0.25);
-            temp.body.collideWorldBounds = true;
+                let temp = game.add.sprite(game.rnd.between(0,800), 100, 'ball');
+                temp.anchor.x = 0.5;
+                temp.anchor.y = 0.5;
+                hittableObjects.add(temp);
+                //ball.position.setTo(player.x+player.width/2-ball.width/2, player.y+player.height-ball.height);
+                temp.body.bounce.set(0.25);
+                temp.body.collideWorldBounds = true;
+                //temp.body.setCircle(temp.height/2);
             }
 
             game.input.onDown.add(placeBall);
+
+            //Sound stuff
+            bounceSound = game.sound.add('bounce');
+            hitSound = game.sound.add('hit');
         },
 
         update: function () {
@@ -286,23 +298,24 @@ GameStates.makeGame = function( game, shared ) {
                 }
             }
     
-            if (jump.isDown && (player.body.onFloor() || player.body.touching.down))
+            if ((jump.isDown || altjump.isDown) && (player.body.onFloor() || player.body.touching.down))
             {
                 player.body.velocity.y = -900;
             }
     
             if(sprint.isDown){
-                player.body.maxVelocity.x = 600;
+                //player.body.maxVelocity.x = 600;
             }
             else if(crouch.isDown){
-                player.body.maxVelocity.x = 150;
+                //player.body.maxVelocity.x = 150;
             }
             else{
-                player.body.maxVelocity.x = 300;
+                //player.body.maxVelocity.x = 300;
+                player.body.maxVelocity.x = 100;
             }
 
             if(game.input.activePointer.leftButton.isDown){
-                player.body.maxVelocity.x = 150;
+                player.body.maxVelocity.x = 100;
                 player.frameName = 'swing body';
                 arms.x = player.x;
                 arms.bottom = player.bottom;
@@ -341,6 +354,7 @@ GameStates.makeGame = function( game, shared ) {
         render: function () {
             //game.debug.spriteBounds( player, 'rgba(255,255,0,0.4)' ) ;
             //game.debug.body(player);
+            //game.debug.physicsGroup(hittableObjects);
         }
         
     };
