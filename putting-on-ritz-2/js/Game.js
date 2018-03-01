@@ -63,6 +63,11 @@ GameStates.makeGame = function( game, shared ) {
                 lowestDistance = currentDistance;
                 closestBall = obj;
             }
+            if(obj.body.onFloor()){
+                obj.body.drag.x = 250;
+            }else{
+                obj.body.drag.x = 0;
+            }
         },this);
         //console.log(lowestDistance);
         if(closestBall != null && lowestDistance<50){
@@ -106,7 +111,6 @@ GameStates.makeGame = function( game, shared ) {
             launchVelocity.y = origin.y - pointer.y;   
         }
         if(charging){
-            drawTrajectory();
             aimGraphics.clear();
             aimGraphics.lineStyle(1, 0x000000, 0.75);
             aimGraphics.beginFill(0x000000, 0.25);
@@ -209,23 +213,17 @@ GameStates.makeGame = function( game, shared ) {
             right = game.input.keyboard.addKey(Phaser.Keyboard.D);
 
             trajectoryGraphics = game.add.graphics(0, 0);
-            trajectoryGraphics.fixedToCamera = true;
+            //trajectoryGraphics.fixedToCamera = true;
             aimGraphics = game.add.graphics(0, 0);
             oldGraphics = game.add.sprite(0,0);
             launchVelocity = new Phaser.Point(0, 0);
 
-            var temp = game.add.sprite(0, 0, 'ball');
+            let temp = game.add.sprite(0, 100, 'ball');
             temp.anchor.x = 0.5;
             temp.anchor.y = 0.5;
             hittableObjects.add(temp);
             //ball.position.setTo(player.x+player.width/2-ball.width/2, player.y+player.height-ball.height);
-            temp.body.collideWorldBounds = true;
-
-            var temp = game.add.sprite(100, 0, 'ball');
-            temp.anchor.x = 0.5;
-            temp.anchor.y = 0.5;
-            hittableObjects.add(temp);
-
+            temp.body.bounce.set(0.25);
             temp.body.collideWorldBounds = true;
 
             game.input.onDown.add(placeBall);
@@ -239,6 +237,7 @@ GameStates.makeGame = function( game, shared ) {
             
             game.physics.arcade.collide(player, platforms);
             game.physics.arcade.collide(hittableObjects);
+            game.physics.arcade.collide(hittableObjects, platforms);
 
             player.body.acceleration.x = 0;
             if (left.isDown)
