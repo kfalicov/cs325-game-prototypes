@@ -15,22 +15,26 @@ GameStates.makeGame = function( game, shared ) {
 
     let accel = 70;
     let decel = 35;
+
     // the ball you are about to fire
     let ball;
 
+    let hittableObjects;
+
     let charging;
+    let dotRadius = 3;
     // the origin of the click for mouse drag
     let origin;
+    //the circle that denotes limits of the shot power
+    let circleArea = new Phaser.Circle(0,0,256);
     // the currently dragged mouse pointer
     let pointer;
 
     // here we will draw the predictive trajectory
-    let currentTrajectoryGraphics;
-    let currentAimGraphics;
+    let trajectoryGraphics;
+    let aimGraphics;
 
-    // here we will draw the previous shot
-    let lastTrajectoryGraphics;
-    let lastAimGraphics;
+    let oldGraphics;
 
 
     // a simple multiplier to increase launch power
@@ -49,13 +53,32 @@ GameStates.makeGame = function( game, shared ) {
 
     }
 
+    //sets the current item to be the active hit item
+    function setHittableObject(){
+        let closestBall;
+        let lowestDistance;
+        hittableObjects.forEach(function(obj){
+            let currentDistance = Phaser.Math.distance(obj.x, obj.y, player.x, player.y);
+            if(currentDistance < lowestDistance || lowestDistance == null){
+                lowestDistance = currentDistance;
+                closestBall = obj;
+            }
+        },this);
+        //console.log(lowestDistance);
+        if(closestBall != null && lowestDistance<50){
+            ball = closestBall;
+        }else{
+            ball = null;
+        }
+    }
+
     //put a ball at the feet of the player
     function placeBall(e)
     {
-        ball = game.add.sprite(0, 0, 'ball');
-        ball.position.setTo(player.x+player.width/2-ball.width/2, player.y+player.height-ball.height);
         // enabling physics on ball sprite
         origin = new Phaser.Point(e.x, e.y);
+        circleArea.x = e.x;
+        circleArea.y = e.y;
         pointer = new Phaser.Point(e.x, e.y);
         // removing onDown listener
         game.input.onDown.remove(placeBall);
@@ -68,64 +91,84 @@ GameStates.makeGame = function( game, shared ) {
 
     function onMouseDrag(pointer, x, y, down){
         if(pointer.id == 0){
-            pointer.x = x;
-            pointer.y = y;
-
-            launchVelocity.x = origin.x - x;
-            launchVelocity.y = origin.y - y;   
+            //check if mouse point is in the circle
+            if(circleArea.contains(x, y)){
+                //console.log("inside");
+                pointer.x = x;
+                pointer.y = y;
+            }else{
+                //console.log("outside");
+                let angle = game.physics.arcade.angleBetween(origin, new Phaser.Point(x,y));
+                //if pointer is outside circle, set pointer coords to intersect between that line and the circle edge
+                circleArea.circumferencePoint(angle, false, pointer);
+            }
+            launchVelocity.x = origin.x - pointer.x;
+            launchVelocity.y = origin.y - pointer.y;   
         }
         if(charging){
-            currentAimGraphics.clear();
-            currentAimGraphics.lineStyle(1, 0x000000, 0.75);
-            currentAimGraphics.beginFill(0x000000, 0.25);
-            currentAimGraphics.drawCircle(origin.x, origin.y, 256);
-            currentAimGraphics.endFill();
-            currentAimGraphics.lineStyle(3, 0x00ff00);
-            currentAimGraphics.moveTo(origin.x, origin.y);
+            drawTrajectory();
+            aimGraphics.clear();
+            aimGraphics.lineStyle(1, 0x000000, 0.75);
+            aimGraphics.beginFill(0x000000, 0.25);
+            aimGraphics.drawCircle(origin.x, origin.y, 256);
+            aimGraphics.endFill();
+            aimGraphics.lineStyle(2, 0xffffff);
+            aimGraphics.moveTo(origin.x, origin.y);
             // ... draw a line from origin to pointer position
-            currentAimGraphics.lineTo(pointer.x, pointer.y);
+            aimGraphics.lineTo(pointer.x, pointer.y);
+            aimGraphics.drawCircle(pointer.x, pointer.y, 10);
         }
+        
     }
 
 
     // this function will allow the player to charge the ball before the launch, and it's the core of the example
     function drawTrajectory(){
-        // we do not allow multitouch, so we are only handling pointer which id is zero
-         ball.position.setTo(player.x+player.width/2-ball.width/2, player.y+player.height-ball.height);
-                        
+
+        trajectoryGraphics.clear();
+        if(ball != null){
             //the current alpha
             let currentAlpha = 1;
             //this is how many points in the trajectory graph
             let numberOfPoints = 16;
-            currentTrajectoryGraphics.clear();
             for (var i = 0; i < numberOfPoints; i++){
-                currentTrajectoryGraphics.lineStyle(1,0xffffff, currentAlpha);
-                var trajectoryPoint = getTrajectoryPoint(player.x+player.width/2, player.y+player.height-8, launchVelocity.x*forceMult, launchVelocity.y*forceMult, i*3);
-                currentTrajectoryGraphics.drawCircle(trajectoryPoint.x, trajectoryPoint.y, 6);
+                trajectoryGraphics.lineStyle(1, 0xffffff, currentAlpha);
+                var trajectoryPoint = getTrajectoryPoint(ball.x, ball.y, launchVelocity.x*forceMult, launchVelocity.y*forceMult, i*3);
+                trajectoryGraphics.drawCircle(trajectoryPoint.x, trajectoryPoint.y, dotRadius*2);
                 currentAlpha -= 1/numberOfPoints;   
-            }     
-        
+            }
+        }
     }
 
     // function to launch the ball
     function launchBall(){
         // adjusting callbacks
         charging = false;
-        game.input.deleteMoveCallback(0);
+        game.input.deleteMoveCallback(onMouseDrag);
         game.input.onUp.remove(launchBall);
         game.input.onDown.add(placeBall);
-        game.physics.arcade.enable(ball);
-        // setting ball velocity
-        ball.body.velocity.x = launchVelocity.x * forceMult;
-        ball.body.velocity.y = launchVelocity.y * forceMult;
-        lastTrajectoryGraphics = currentTrajectoryGraphics;
+
+        //temporarily allow world bound collision
+        
+        if(ball != null){
+            // setting ball velocity
+            ball.body.velocity.x = launchVelocity.x * forceMult;
+            ball.body.velocity.y = launchVelocity.y * forceMult;
+            ball.body.angularVelocity = 100 * (ball.body.velocity.x + ball.body.velocity.y);
+        }
     }
 
     function getTrajectoryPoint(startX, startY, velocityX, velocityY, n) {
-        var t = 1 / 60;    
-       
-        let tpy = startY + (velocityY*t*n) + 1/2*(game.physics.arcade.gravity.y)*(t*t*n*n); 
-        let tpx = startX + velocityX*t*n;    
+        var framerate = 1 / 60;
+        var interval = n * framerate;
+        var balloffset;
+        if(ball != null){
+            balloffset = ball.height;
+        }else{
+            balloffset = 16;
+        }
+        let tpy = startY + ((velocityY + balloffset + dotRadius) * interval) + 1/2*(game.physics.arcade.gravity.y)*(interval*interval); 
+        let tpx = startX + velocityX*interval;    
         return {
             x: tpx, 
             y: tpy 
@@ -146,8 +189,11 @@ GameStates.makeGame = function( game, shared ) {
             this.game.physics.arcade.gravity.y = 2400;
             player.body.maxVelocity.x = 300;
             player.body.maxVelocity.y = 1800;
+            player.anchor.x = 0.5;
+            player.anchor.y = 1;
 
-            platforms = game.add.physicsGroup();
+            platforms = game.add.physicsGroup(Phaser.Physics.ARCADE);
+            hittableObjects = game.add.physicsGroup(Phaser.Physics.ARCADE);
 
             platforms.create(500, 150, 'platform');
             platforms.create(-200, 300, 'platform');
@@ -162,21 +208,37 @@ GameStates.makeGame = function( game, shared ) {
             left = game.input.keyboard.addKey(Phaser.Keyboard.A);
             right = game.input.keyboard.addKey(Phaser.Keyboard.D);
 
-            currentTrajectoryGraphics = game.add.graphics(0, 0);
-            lastTrajectoryGraphics = game.add.graphics(0, 0);
-            currentAimGraphics = game.add.graphics(0, 0);
-            lastAimGraphics = game.add.graphics(0, 0);
+            trajectoryGraphics = game.add.graphics(0, 0);
+            trajectoryGraphics.fixedToCamera = true;
+            aimGraphics = game.add.graphics(0, 0);
+            oldGraphics = game.add.sprite(0,0);
             launchVelocity = new Phaser.Point(0, 0);
+
+            var temp = game.add.sprite(0, 0, 'ball');
+            temp.anchor.x = 0.5;
+            temp.anchor.y = 0.5;
+            hittableObjects.add(temp);
+            //ball.position.setTo(player.x+player.width/2-ball.width/2, player.y+player.height-ball.height);
+            temp.body.collideWorldBounds = true;
+
+            var temp = game.add.sprite(100, 0, 'ball');
+            temp.anchor.x = 0.5;
+            temp.anchor.y = 0.5;
+            hittableObjects.add(temp);
+
+            temp.body.collideWorldBounds = true;
 
             game.input.onDown.add(placeBall);
         },
 
         update: function () {
             if(charging){
-               // drawShot();
+                setHittableObject();
                 drawTrajectory();
             }
+            
             game.physics.arcade.collide(player, platforms);
+            game.physics.arcade.collide(hittableObjects);
 
             player.body.acceleration.x = 0;
             if (left.isDown)
@@ -223,7 +285,7 @@ GameStates.makeGame = function( game, shared ) {
         },
 
         render: function () {
-
+            game.debug.spriteBounds( oldGraphics, 'rgba(255,255,0,0.4)' ) ;
         }
         
     };
