@@ -63,11 +63,6 @@ GameStates.makeGame = function( game, shared ) {
                 lowestDistance = currentDistance;
                 closestBall = obj;
             }
-            if(obj.body.onFloor()){
-                obj.body.drag.x = 250;
-            }else{
-                obj.body.drag.x = 0;
-            }
         },this);
         //console.log(lowestDistance);
         if(closestBall != null && lowestDistance<50){
@@ -274,12 +269,21 @@ GameStates.makeGame = function( game, shared ) {
             if(sprint.isDown){
                 player.body.maxVelocity.x = 600;
             }
-            else if(crouch.isDown){
+            else if(crouch.isDown || game.input.activePointer.leftButton.isDown){
                 player.body.maxVelocity.x = 150;
             }
             else{
                 player.body.maxVelocity.x = 300;
             }
+            hittableObjects.forEach(function(obj){
+                if(obj.body.touching.down || obj.body.onFloor()){
+                    obj.body.drag.x = 250;
+                    console.log("ground");
+                }else{
+                    obj.body.drag.x = 0;
+                    console.log("air");
+                }
+            },this);
             
         },
 
