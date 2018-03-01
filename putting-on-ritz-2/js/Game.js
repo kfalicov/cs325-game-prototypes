@@ -209,9 +209,10 @@ GameStates.makeGame = function( game, shared ) {
             platforms = game.add.physicsGroup(Phaser.Physics.ARCADE);
             hittableObjects = game.add.physicsGroup(Phaser.Physics.ARCADE);
 
-            platforms.create(500, 150, 'platform');
-            platforms.create(-200, 300, 'platform');
-            platforms.create(400, 450, 'platform');
+            platforms.create(200, 200, 'platform');
+            platforms.create(-200, 350, 'platform');
+            platforms.create(500, 350, 'platform');
+            platforms.create(840, 30, 'platform');
 
             platforms.setAll('body.immovable', true);
             platforms.setAll('body.allowGravity', false);
@@ -228,13 +229,15 @@ GameStates.makeGame = function( game, shared ) {
             oldGraphics = game.add.sprite(0,0);
             launchVelocity = new Phaser.Point(0, 0);
 
-            let temp = game.add.sprite(0, 100, 'ball');
+            for(let i=0;i<10;i++){
+            let temp = game.add.sprite(game.rnd.between(0,800), 100, 'ball');
             temp.anchor.x = 0.5;
             temp.anchor.y = 0.5;
             hittableObjects.add(temp);
             //ball.position.setTo(player.x+player.width/2-ball.width/2, player.y+player.height-ball.height);
             temp.body.bounce.set(0.25);
             temp.body.collideWorldBounds = true;
+            }
 
             game.input.onDown.add(placeBall);
         },
@@ -307,7 +310,7 @@ GameStates.makeGame = function( game, shared ) {
                 arms.frameName = 'arms0';
                 if(Math.abs(arms.angle) > 40){
                     arms.frameName = 'arms3';
-                    //console.log(arms.angle);
+                    //aconsole.log(arms.angle);
                 }else if(Math.abs(arms.angle) > 20){
                     arms.frameName = 'arms1';
                 }
@@ -328,6 +331,10 @@ GameStates.makeGame = function( game, shared ) {
                     //console.log("air");
                 }
             },this);
+
+            if(!(player.body.onFloor() || player.body.touching.down)){
+                player.frameName = 'jumping';
+            }
             
         },
 
