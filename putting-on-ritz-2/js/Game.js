@@ -4,6 +4,7 @@ GameStates.makeGame = function( game, shared ) {
     // Create your own variables.
 
     let player;
+    let arms;
     let platforms;
 
     //the input keys
@@ -104,6 +105,10 @@ GameStates.makeGame = function( game, shared ) {
             }
             launchVelocity.x = origin.x - pointer.x;
             launchVelocity.y = origin.y - pointer.y;   
+            arms.angle = Math.min(100,launchVelocity.getMagnitude());
+            if(launchVelocity.x <0){
+                arms.angle *= -1;
+            }
         }
         if(charging){
             aimGraphics.clear();
@@ -181,7 +186,17 @@ GameStates.makeGame = function( game, shared ) {
             game.stage.backgroundColor = '#002560';
             player = game.add.sprite(100, 200, 'player');
 
+            arms = game.add.sprite(0,0,'player');
+            arms.visible = false;
+            arms.anchor.set(0.5,0.25);
+           
+            //animations
+            player.animations.add('walk', Phaser.Animation.generateFrameNames('walk', 0, 7), 10, true);
+
             game.physics.arcade.enable(player);
+
+
+            player.body.setSize(player.width/3, player.height-10, player.width/3, 10);
 
             player.body.collideWorldBounds = true;
             player.body.allowDrag = true;
@@ -238,15 +253,19 @@ GameStates.makeGame = function( game, shared ) {
             if (left.isDown)
             {
                 player.body.velocity.x -= accel;
+                player.scale.x = -1;
+                player.animations.play('walk');
             }
             else if (right.isDown)
             {
                 player.body.velocity.x += accel;
+                player.scale.x = 1;
+                player.animations.play('walk');
             }
             else if (!left.isDown && !right.isDown)
             {
                 let usedecel;
-                if(player.body.onFloor())
+                if(player.body.onFloor() || player.body.touching.down)
                 {
                     usedecel = decel;
                 }else
@@ -257,8 +276,11 @@ GameStates.makeGame = function( game, shared ) {
                     player.body.velocity.x -= usedecel;
                 else if(player.body.velocity.x < (0-usedecel))
                     player.body.velocity.x += usedecel;
-                else
+                else{
                     player.body.velocity.x = 0;
+                    player.animations.stop();
+                    player.frameName = 'standing';
+                }
             }
     
             if (jump.isDown && (player.body.onFloor() || player.body.touching.down))
@@ -269,26 +291,49 @@ GameStates.makeGame = function( game, shared ) {
             if(sprint.isDown){
                 player.body.maxVelocity.x = 600;
             }
-            else if(crouch.isDown || game.input.activePointer.leftButton.isDown){
+            else if(crouch.isDown){
                 player.body.maxVelocity.x = 150;
             }
             else{
                 player.body.maxVelocity.x = 300;
             }
+
+            if(game.input.activePointer.leftButton.isDown){
+                player.body.maxVelocity.x = 150;
+                player.frameName = 'swing body';
+                arms.x = player.x;
+                arms.bottom = player.bottom;
+                arms.visible = true;
+                arms.frameName = 'arms0';
+                if(Math.abs(arms.angle) > 40){
+                    arms.frameName = 'arms3';
+                    //console.log(arms.angle);
+                }else if(Math.abs(arms.angle) > 20){
+                    arms.frameName = 'arms1';
+                }
+                if(arms.angle < 0){
+                    arms.scale.x = -1;
+                }else{
+                    arms.scale.x = 1;
+                }
+            }else{
+                arms.visible = false;
+            }
             hittableObjects.forEach(function(obj){
                 if(obj.body.touching.down || obj.body.onFloor()){
                     obj.body.drag.x = 250;
-                    console.log("ground");
+                    //console.log("ground");
                 }else{
                     obj.body.drag.x = 0;
-                    console.log("air");
+                    //console.log("air");
                 }
             },this);
             
         },
 
         render: function () {
-            game.debug.spriteBounds( oldGraphics, 'rgba(255,255,0,0.4)' ) ;
+            //game.debug.spriteBounds( player, 'rgba(255,255,0,0.4)' ) ;
+            //game.debug.body(player);
         }
         
     };
