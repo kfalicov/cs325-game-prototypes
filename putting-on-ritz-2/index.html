@@ -14,13 +14,29 @@
 	<script src="js/Game.js"></script>
 	<!-- main.js must come last since it references the other ones. -->
 	<script src="js/main.js"></script>
-
+	<script language="javascript">
+		function toggle(showHideDiv, switchTextDiv) {
+			var ele = document.getElementById(showHideDiv);
+			var text = document.getElementById(switchTextDiv);
+			if(ele.style.display == "block") {
+				ele.style.display = "none";
+				text.style.backgroundColor= "#4eb251";
+				text.innerHTML = "+ Show Readme";
+			}
+			else {
+				ele.style.display = "block";
+				text.style.backgroundColor = "#c14b4b";
+				text.innerHTML = "- Hide Readme";
+			}
+		} 
+	  </script>
 <style></style>
 
 </head>
 <body>
 <div id="game" style="width:100%; max-width:1200px;"></div>
-<div id="readme">
+<div id="divtoggle" onclick="toggle('readme','divtoggle')">+ Show Readme</div>
+<div id="readme" style = "display: none; width:100%; max-width:1200px;">
 <h2>Putting on the Ritz (remake)</h2>
 
 <ul>
