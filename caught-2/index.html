@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8" />
-	<title>Butterfly Catch</title>
+	<title>Butterfly Catch (remake)</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
 
 	<script src="js/phaser.min.js"></script>
@@ -37,95 +37,98 @@
 <div id="game" style="width:100%; max-width:1200px;"></div>
 <div id="divtoggle" onclick="toggle('readme','divtoggle')">+ Show Readme</div>
 <div id="readme" style = "display: none; width:100%; max-width:1200px;">
-<h2>Putting on the Ritz (remake)</h2>
+	<h2>Butterfly Catch (remake)</h2>
 
-<ul>
-<li><strong>Originality:</strong>
-What is original about your game?<br>
-The game is a fun little physics sim with launch functionality and collisions
-</li>
-
-<li><strong>Technical Merit:</strong>
-What is interesting about your game technology?<br>
-The game is now a solid engine and can be easily expanded in the future. You can hit things in the world and launch them, and then go and hit them again.  It's close to being a real golf game at this point.
-</li>
-
-<li><strong>Prototype Postmortem:</strong>
-What did you learn from this prototype?<br>
-I fixed the resize feature so the game displays at variable sizes (with a max size).  I also figured out how to detect intersection with a circle, which I used for the power gauge during launch.  I also used atlases for animation.<br>
-What was the easiest or hardest part of making it?<br>
-The hardest part was making the swings apply to the nearest ball within a range.  At first, I had it set to spawn balls when you clicked, but it's much more fun to use the environment objects.  The easiest part was learning how to draw circles at a specific location.
-</li>
-
-<li><strong>Prototype Assets:</strong>
-Did you make your prototype assets from scratch? Did you borrow them? Cite your sources here.
-<ul>
-<li>Menu Background: self made</li>
-<li>Game Background: <a href="https://z-design.deviantart.com/art/horizon-14173129">Google Images</a></li>
-<li>Player animations: self made</li>
-<li>Golf Swing sound: <a href="https://www.youtube.com/watch?v=kCZhVdVl1m0">YouTube</a></li>
-</ul>
-</li>
-
-<li><strong>Prototype Closest Other Game:</strong>
-Which other game most closely resembles your game? If you are borrowing code from a Phaser Example, you must say so here. If you borrow code from elsewhere, you must say so here.
-<ul>
-<li>My original prototype used the base framework for the platformer found at <a href="https://phaser.io/sandbox/edit/3">https://phaser.io/sandbox/edit/3</a>, and added a physics system with accelerations and drag based on trial and error and the documentation found online. At this point, after adding a friction system, it's not quite the same as any of the Phaser examples.</li>
-<li>Again, my initial prototype used the trajectory system from <a href="http://www.emanueleferonato.com/2015/09/08/html5-physics-sling-with-predictive-trajectory-like-trick-shot-ios-game-using-phaser-box2d/">http://www.emanueleferonato.com/2015/09/08/html5-physics-sling-with-predictive-trajectory-like-trick-shot-ios-game-using-phaser-box2d/</a>, but I ended up reworking all of it so the predictions are more accurate.</li>
-</ul>
-</li>
-
-<li><strong>High Concept:</strong>
-A one-sentence summary of your game.<br>
-A golfer finds a lot of objects and decides to hit them around for a bit.
-</li>
-
-<li><strong>Theme:</strong>
-State which of the Storymatic themes you used.<br>
-[This is an iteration on the "golfer" theme from week 1]
-</li>
-
-<li><strong>Mandated Variety:</strong>
-State which input, randomness, genre, and play style you used in this prototype.<br>
-Keyboard and mouse input, not random, platforming physics shooter.
-</li>
-
-<li><strong>Prototype Goal:</strong>
-What game mechanic is this prototype evaluating?<br>
-The mechanic this prototype is evaluating is the golf launcher mechanic.
-</li>
-
-<li><strong>Player Experience Goals:</strong>
-What experience do you want players to have when playing your game?<br>
-I want players to enjoy messing around with the physics projectile system I've created.
-</li>
-
-<li><strong>Gameplay:</strong>
-A paragraph describing the actions the player can perform, the system dynamics, and the core mechanic. Include a concise explanation of the prototype’s inputs and their expected effects (how to play). You can also describe game play that is not in the prototype. You may include mock-up images for parts of the game not in the prototype.<br>
-A and D for movement, W or Spacebar for jump, and mouse click and drag to hit a ball. The balls cannot be hit unless you are close enough to hit them with the golf club. While clicking and dragging, a predictive trajectory will display where the balls are going to travel. I wanted to make enemies randomly spawn on the platforms and have players hit golf balls at them, but ran out of time.
-</li>
-
-<li><strong>Strategies:</strong>
-What player strategies do you expect will be effective at playing this game?<br>
-I realized that you can hit golf balls while in midair if you jump and quickly drag the mouse.  This may make it possible in the future to get golf balls into places not ordinarily accessible.
-</li>
-
-<li><strong>Story/Setting/Premise:</strong>
-A paragraph about the world your game is set in and who the characters are. What makes the game world and its occupants unique and interesting? Do the tokens represent something? If the game has a backstory, mention it here. If the game is abstract, then say so. How will the dramatic tension interact with the gameplay tension?<br>
-The Golfer is an average man with an affinity for golf.  He gets turned down by the Ritz hotel when trying to get a room, but determined to gain access to the fancy hotel, he decides to sneak in the roof.  As a golfer his skill set involves hitting random objects with his golf club, with the objective of distracting or knocking out the guards on the roof. Apparently since no guards exist in this game, the Golfer got distracted and ended up playing golf by himself instead.  The setting is now a purple horizon.
-</li>
-
-<li><strong>Target Audience:</strong>
-A single sentence that describes the demographic you're trying to reach.<br>
-People who like physics launcher games like Angry Birds.
-</li>
-
-<li><strong>Play Time:</strong>
-How long does your game take to play?<br>
-About 1-2 minutes.
-</li>
-
-</ul>
+	<ul>
+	<li><strong>Originality:</strong>
+	What is original about your game?<br>
+	The game is a puzzle game that involves dividing up butterflies and trapping them.
+	</li>
+	
+	<li><strong>Technical Merit:</strong>
+	What is interesting about your game technology?<br>
+	This game has BMP generated graphics for the "crosshair" as well as a constantly expanding list of wall colliders and bounce physics.
+	The update now includes a win system where the butterflies check for when they are trapped within a certain space.  Additionally, butterflies have restricted angles of movement so they don't accidentally travel perfectly horizontally or vertically.
+	</li>
+	
+	<li><strong>Prototype Postmortem:</strong>
+	What did you learn from this prototype?<br>
+	I learned how to use rectangle collisions to detect overlaps without a physics system.<br>
+	What was the easiest or hardest part of making it?<br>
+	The hardest part of the remake was getting the trap detection working, and even in the current iteration it is still buggy as you can put lines in the middle of butterflies and it won't register them as separated from their flowers, although they could be.
+	</li>
+	
+	<li><strong>Prototype Assets:</strong>
+	Did you make your prototype assets from scratch? Did you borrow them? Cite your sources here.
+	<ul>
+	<li>Menu Background: <a href="https://thumbs.dreamstime.com/b/full-length-portrait-mature-man-running-catching-butterflies-net-isolated-white-background-32895779.jpg">Stock Image</a></li>
+	<li>Butterfly: <a href="https://freeclipartspot.com//storage/upload/butterfly-clipart/butterfly-clipart-8.png">Google Images</a> and photoshop for recoloring</li>
+	<li>Flower: drawn by <a href="https://www.instagram.com/commandurr14/">Commandurr14</a></li>
+	</ul>
+	</li>
+	
+	<li><strong>Prototype Closest Other Game:</strong>
+	Which other game most closely resembles your game? If you are borrowing code from a Phaser Example, you must say so here. If you borrow code from elsewhere, you must say so here.
+	<ul>
+	<li>Butterfly Catch 1 <a href="../caught">here</a></li>
+	<li>Drawing lines with BitmapData: <a href="http://www.html5gamedevs.com/topic/5395-line-moving/">this forum post</a></li>
+	<li>Adding graphics that have collisions: <a href="http://www.html5gamedevs.com/topic/6476-collision-with-gameaddgraphics-and-a-sprite/">this forum post</a>
+	<li>Overlap without physics: <a href="https://phaser.io/examples/v2/sprites/overlap-without-physics">Phaser Example</a>
+	</ul>
+	</li>
+	
+	<li><strong>High Concept:</strong>
+	A one-sentence summary of your game.<br>
+	Catch butterflies in the target areas by trapping them in grids.
+	</li>
+	
+	<li><strong>Theme:</strong>
+	State which of the Storymatic themes you used.<br>
+	Caught!
+	</li>
+	
+	<li><strong>Mandated Variety:</strong>
+	State which input, randomness, genre, and play style you used in this prototype.<br>
+	Mouse Input, a lot of randomness, puzzle, Collector.
+	</li>
+	
+	<li><strong>Prototype Goal:</strong>
+	What game mechanic is this prototype evaluating?<br>
+	This game stretches peripheral perception and requires players to think carefully before acting.
+	</li>
+	
+	<li><strong>Player Experience Goals:</strong>
+	What experience do you want players to have when playing your game?<br>
+	I want players to trap their butterflies in the wrong spots and get stuck, but become better at dividing the butterflies up and quickly cordoning them off.
+	</li>
+	
+	<li><strong>Gameplay:</strong>
+	A paragraph describing the actions the player can perform, the system dynamics, and the core mechanic. Include a concise explanation of the prototype’s inputs and their expected effects (how to play). You can also describe game play that is not in the prototype. You may include mock-up images for parts of the game not in the prototype.<br>
+	The mouse is the only control. Moving the mouse moves either a vertical or horizontal axis, and clicking will place a "wall" along that axis. After a click, the axis switches from horizontal to vertical or vice versa.  The goal is to trap butterflies in their matching color squares in the field.  Eventually I want to implement scoring or a way to complete levels, this will be done by starting a timer when a butterfly goes over the correct square, and if a certain time elapses it can be considered caught.  I also have to make more precise checks on initial velocity so that the butterfly can't be moving perfectly vertically or horizontally.  Lastly, I might make the wall generation more random than the two axes, and include diagonals or rotation.
+	</li>
+	
+	<li><strong>Strategies:</strong>
+	What player strategies do you expect will be effective at playing this game?<br>
+	The best strategy is to be patient and wait for butterflies to be in ideal positions.  It is also possible to put walls in the middle of butterflies as they are moving, and they will continue through them.  This can be useful to simultaneously stop a butterfly and allow another one through.
+	</li>
+	
+	<li><strong>Story/Setting/Premise:</strong>
+	A paragraph about the world your game is set in and who the characters are. What makes the game world and its occupants unique and interesting? Do the tokens represent something? If the game has a backstory, mention it here. If the game is abstract, then say so.
+	How will the dramatic tension interact with the gameplay tension?<br>
+	The game is set in the sky, and the focus is on different colored butterflies.  The game is mostly abstract, as the focus is on the puzzle.
+	</li>
+	
+	<li><strong>Target Audience:</strong>
+	A single sentence that describes the demographic you're trying to reach.<br>
+	I wanted to improve this game because I enjoy playing it.
+	</li>
+	
+	<li><strong>Play Time:</strong>
+	How long does your game take to play?<br>
+	About 1-2 minutes.
+	</li>
+	
+	</ul>
 </div>
 </body>
 </html>
