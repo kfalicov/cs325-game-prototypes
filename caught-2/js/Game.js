@@ -5,6 +5,7 @@ GameStates.makeGame = function( game, shared ) {
 
     let text;
     let resetbutton;
+    let count = 0; //number of butterflies caught
 
     function quitGame() {
 
@@ -144,6 +145,8 @@ GameStates.makeGame = function( game, shared ) {
                 butterfly.totalXDistance = Math.abs(butterfly.leftX-butterfly.rightX);
                 if(butterfly.totalXDistance<50 && butterfly.totalYDistance<50){
                     butterfly.caught = true;
+                    count++;
+                    text.text = "Caught: " + count;
                 }
             }
             //console.log(butterfly.caught);
@@ -225,46 +228,30 @@ GameStates.makeGame = function( game, shared ) {
             }
             this.bmd.update();
 
-            if(this.butterfly1.caught){
-                if(checkOverlap(this.butterfly1, this.flower1)){
-                    text.text = "Good job! you caught the orange butterfly!";
-                }else{
-                    text.text = "You trapped a butterfly away from its flower!";
-                    resetbutton.inputEnabled = true;
-                    resetbutton.visible = true;
-                }
-            }
-
-            if(this.butterfly2.caught){
-                if(checkOverlap(this.butterfly2, this.flower2)){
-                    text.text = "Good job! you caught the purple butterfly!";
-                }else{
-                    text.text = "You trapped a butterfly away from its flower!";
-                    resetbutton.inputEnabled = true;
-                    resetbutton.visible = true;
-                }
-            }
-
-            if(this.butterfly3.caught){
-                if(checkOverlap(this.butterfly3, this.flower3)){
-                    text.text = "Good job! you caught the green butterfly!";
-                }else{
-                    text.text = "You trapped a butterfly away from its flower!";
-                    resetbutton.inputEnabled = true;
-                    resetbutton.visible = true;
-                }
-            }
-
-            var count = 0;
-            this.butterflies.forEach(function(item){
-                if(item.caught){
-                    count++;
-                }
-            }, this);
             if(count == 3){
-                text.text = "Every butterfly is trapped!";
-                resetbutton.inputEnabled = true;
-                resetbutton.visible = true;
+                //text.text = "Every butterfly is trapped!";
+                let wincount = 0;
+                if(checkOverlap(this.butterfly1, this.flower1)){
+                    wincount++;
+                }
+    
+                if(checkOverlap(this.butterfly2, this.flower2)){
+                    wincount++;
+                }
+    
+                if(checkOverlap(this.butterfly3, this.flower3)){
+                    wincount++;
+                }
+
+                if(wincount == 3){
+                    shared.lastscore = this.walls.length;
+                    game.state.start('GameOver');
+                }else{
+                    text.text = "Oh no! restart?";
+                    resetbutton.inputEnabled = true;
+                    resetbutton.visible = true;
+                }
+                wincount = 0;
             }
 
             game.physics.arcade.collide(this.butterflies, this.walls, this.bounce);
@@ -287,7 +274,10 @@ GameStates.makeGame = function( game, shared ) {
 };
 
 GameStates.makeGameOver = function( game, shared ) {
-    
+    function restart(){
+        game.state.add( 'Game', GameStates.makeGame( game, shared ) );
+        game.state.start('Game');
+    }
     return {
     
         create: function () {
@@ -311,9 +301,15 @@ GameStates.makeGameOver = function( game, shared ) {
             }
             var style = { font: "25px Verdana", fill: "#000000", align: "center" };
             var text = game.add.text( game.world.centerX, 15,
-                "Game over! \nYour score: " + shared.lastscore+"\nYour high score: "+ shared.highscore + "\n\n Click to return to menu.",
+                "You win! \nYour score: " + shared.lastscore+" lines\nYour high score: "+ shared.highscore + " lines\n\n Click anywhere to return to menu, or click restart to play again!",
                 style );
+
             text.anchor.setTo( 0.5, 0.0 );
+            let resetbutton = game.add.sprite(game.width/2, game.height/2, 'reset');
+            resetbutton.anchor.setTo(0.5,0.5);
+            resetbutton.inputEnabled = true;
+            resetbutton.visible = true;
+            resetbutton.events.onInputDown.add(restart, this);
         },
     
         update: function () {
