@@ -88,7 +88,10 @@ GameStates.PlayerTurn = function( game, shared ) {
 
     var hoverRow = [];
     var activeRow = [];
+
     var rooms;
+    var enemyrooms;
+
     var graphics;
     var currentPhase = "attack";
     let activeLeft;
@@ -108,10 +111,15 @@ GameStates.PlayerTurn = function( game, shared ) {
             var backocean = game.add.sprite(game.world.centerX,game.height-220,'ocean');
             backocean.anchor.setTo(0.5,0);
             rooms = game.add.group();
+            enemyrooms = game.add.group();
             var room;
             var x = 3;
             var y = 3;
             var spritewidth = 64, spriteheight = 64;
+            var ship = game.add.sprite(-49,-68, 'ship');
+            var badship = game.add.sprite(-46,-68, 'badship');
+            badship.anchor.setTo(1,0);
+            badship.scale.x*=-1;
             for(var i = 0; i < x; i++){
                 for(var j = 0; j < y; j++){
                     room = rooms.create(0, 0, 'room');
@@ -125,10 +133,29 @@ GameStates.PlayerTurn = function( game, shared ) {
                     room.alive = true;
                 }
             }
+            var enemyroom;
+            for(var i = 0; i < x; i++){
+                for(var j = 0; j < y; j++){
+                    enemyroom = enemyrooms.create(0, 0, 'hiddenroom');
+                    enemyroom.row = i;
+                    enemyroom.col = j;
+                    enemyroom.tint = 0xbbbbbb;
+                    enemyroom.inputEnabled = true;
+                    enemyroom.events.onInputUp.add(click, this);
+                    enemyroom.alive = true;
+                }
+            }
            // rooms.createMultiple(9, 'rooms', ['inside_undamaged'], true);
             rooms.align(3, -1, room.width, room.height);
+            rooms.addChildAt(ship,0);
             rooms.x = 100;
             rooms.y = 150;
+
+            enemyrooms.align(3, -1, room.width, room.height);
+            enemyrooms.addChildAt(badship,0);
+            enemyrooms.x = 500;
+            enemyrooms.y = 150;
+
             graphics = game.add.graphics(rooms.x,rooms.y);
             var ocean = game.add.sprite(game.world.centerX,game.height-180,'ocean');
             ocean.anchor.setTo(0.5,0);
@@ -136,7 +163,10 @@ GameStates.PlayerTurn = function( game, shared ) {
             ocean.scale.setTo(scale,scale);
             backocean.scale.setTo(scale,scale);
             backocean.scale.x*=-1;
+
             var shiptween = game.add.tween(rooms).to({y:'-24'}, 4000, Phaser.Easing.Quadratic.InOut, true, 500, -1, true);
+            var enemyshiptween = game.add.tween(enemyrooms).to({y:'-24'}, 4000, Phaser.Easing.Quadratic.InOut, true, 500, -1, true);
+
             var highlighttween = game.add.tween(graphics).to({y:'-24'}, 4000, Phaser.Easing.Quadratic.InOut, true, 500, -1, true);
             var oceantween = game.add.tween(backocean).to({y:'-48'}, 4000, Phaser.Easing.Quadratic.InOut, true, 0, -1, true);
             var oceantween = game.add.tween(ocean).to({y:'-38'}, 4000, Phaser.Easing.Quadratic.InOut, true, 100, -1, true);

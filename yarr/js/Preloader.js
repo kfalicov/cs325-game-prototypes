@@ -30,6 +30,10 @@ GameStates.makePreloader = function( game ) {
             game.load.image('gameBG', 'assets/background.jpg');
             game.load.atlas('playButton', 'assets/play_button.png', 'assets/play_button.json');
             game.load.image('room', 'assets/room.png');
+            game.load.image('hiddenroom', 'assets/hiddenroom.png');
+            game.load.image('ship', 'assets/ship.png');
+            game.load.image('badship', 'assets/badship.png');
+
             game.load.image('ocean', 'assets/sea-clipart-2.png');
             //game.load.audio('titleMusic', ['assets/Poppers and Prosecco.mp3']);
             game.load.audio('bounce', 'assets/bounce.mp3');
