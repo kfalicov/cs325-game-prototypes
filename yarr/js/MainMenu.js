@@ -38,6 +38,9 @@ GameStates.makeMainMenu = function( game, shared ) {
             //music.play();
     
             titlebg = game.add.sprite(0, 0, 'titlePage');
+            var title = game.add.sprite(game.world.centerX, game.world.centerY-200, 'title');
+            title.anchor.setTo(0.5,0);
+            titlebg.scale.setTo(0.5,0.5);
             titlebg.x = (game.width-titlebg.width)/2;
             playButton = game.add.button( 0, 0, 'playButton', startGame, null, 'over', 'out', 'down');
             playButton.x -= playButton.width/2;
@@ -49,11 +52,13 @@ GameStates.makeMainMenu = function( game, shared ) {
             //game.scale.setResizeCallback(resize, this);
            // game.scale.onSizeChange.add(resize, this);
             
-            /* var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
-            text = game.add.text( game.world.centerX, 15,
-                "Your high score: "+ shared.highscore,
+            var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+            text = game.add.text( game.world.centerX, game.world.centerY+15,
+                "A Piratey Battle Game",
                 style );
-            text.anchor.setTo( 0.5, 0.0 ); */
+                text.stroke = '#000000';
+                text.strokeThickness = 6;
+            text.anchor.setTo( 0.5, 0.0 );
         },
     
         update: function () {

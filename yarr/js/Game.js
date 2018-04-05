@@ -131,6 +131,10 @@ GameStates.PlayerTurn = function( game, shared ) {
                     text.setStyle({ font: "25px Verdana", fill: "#004400", align: "center" });
                     text.setText("Player Phase:\nChoose the ship deck you'll use!");
                 }, this);
+            }else{
+                currentPhase = "choose";
+                    text.setStyle({ font: "25px Verdana", fill: "#004400", align: "center" });
+                    text.setText("Player Phase:\nChoose the ship deck you'll use!");
             }
         }
     }
@@ -247,7 +251,7 @@ GameStates.PlayerTurn = function( game, shared ) {
                 //console.log(etc);
                 etc.attacking.alive = false;
                 var disabledrooms = [0,0,0];
-                enemyrooms.forEach(function(member){
+                rooms.forEach(function(member){
                     if(!member.alive && member.row != undefined){
                         disabledrooms[member.row]++;
                     }
