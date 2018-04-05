@@ -35,6 +35,7 @@ GameStates.makePreloader = function( game ) {
             game.load.image('badship', 'assets/badship.png');
             game.load.image('cannon', 'assets/cannon.png');
             game.load.image('dead', 'assets/dead.png');
+            game.load.image('target', 'assets/target.png');
 
             game.load.image('ocean', 'assets/sea-clipart-2.png');
             //game.load.audio('titleMusic', ['assets/Poppers and Prosecco.mp3']);

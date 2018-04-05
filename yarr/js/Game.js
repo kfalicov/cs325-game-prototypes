@@ -35,17 +35,24 @@ GameStates.PlayerTurn = function( game, shared ) {
             }, this, true);
             graphics.lineStyle(2, 0xFF0000, 0.8);
             graphics.drawRect(left, sprite.top, right-left, sprite.height);
-            sprite.tint = 0xaaffaa;
+            //sprite.tint = 0xaaffaa;
         }else if(currentPhase == "repair"){
             game.canvas.style.cursor = "pointer";
             sprite.tint = 0xaaffaa;
+            graphics.lineStyle(2, 0x00ff00, 0.8);
+            graphics.drawRect(sprite.left, sprite.top, sprite.width, sprite.height);
+        }
+        else{
+            sprite.tint = 0xbbbbbb;
         }
     }
 
     function out(sprite){
         game.canvas.style.cursor = "default";
         rooms.forEach(function(member) {
+            if(member.row != undefined){
                 member.tint = 0xbbbbbb;
+            }
         }, this, true);
         hoverRow = [];
         graphics.clear();
@@ -58,10 +65,12 @@ GameStates.PlayerTurn = function( game, shared ) {
                 //console.log("active row clicked");
                 activeRow = [];
                 rooms.forEach(function(member) {
-                    if(member.row == sprite.row) {
-                        member.tint = 0xffffff;
-                    }else{
-                        member.tint = 0xbbbbbb;
+                    if(member.row != undefined){
+                        if(member.row == sprite.row) {
+                            member.tint = 0xffffff;
+                        }else{
+                            member.tint = 0xbbbbbb;
+                        }
                     }
                 }, this, true);
                 sprite.tint = 0xaaffaa;
@@ -80,11 +89,13 @@ GameStates.PlayerTurn = function( game, shared ) {
                         if(member.right > activeRight){
                             activeRight = member.right;
                         }
-                        if(member.cannon == 1){
+                        if(member.cannon == 1 && member.alive){
                             attacksRemaining++;
                         }
                     }else{
-                        member.tint = 0xbbbbbb;
+                        if(member.row != undefined){
+                            member.tint = 0xbbbbbb;
+                        }
                     }
                 }, this, true);
                 text.setText("Player Phase:\nClick to attack the enemy!\nAttacks you'll get: "+attacksRemaining);
@@ -92,6 +103,35 @@ GameStates.PlayerTurn = function( game, shared ) {
         }
         else if(currentPhase == "repair" && !sprite.alive){
             sprite.alive = true;
+            sprite.removeChildAt(sprite.children.length-1).destroy();
+            sprite.tint = 0xbbbbbb;
+            currentPhase = "enemyrepair";
+            text.setStyle({ font: "25px Verdana", fill: "#440000", align: "center" });
+            text.setText("Enemy Phase:\nRepair damage");
+            var numberOfInjuries = 0;
+            enemyrooms.forEach(function(member) {
+                if(!member.alive){
+                    numberOfInjuries++;
+                }
+            }, this, true);
+            if(numberOfInjuries>0){
+                game.time.events.add(Phaser.Timer.SECOND, function()
+                {
+                    var repaired = false;
+                    while(!repaired){
+                        var current = enemyrooms.getRandom();
+                        if(!current.alive){
+                            repaired = true;
+                            current.alive = true;
+                            current.removeChildAt(0);
+                            current.tint = 0xffffff;
+                        }
+                    }
+                    currentPhase = "choose";
+                    text.setStyle({ font: "25px Verdana", fill: "#004400", align: "center" });
+                    text.setText("Player Phase:\nChoose the ship deck you'll use!");
+                }, this);
+            }
         }
     }
 
@@ -110,6 +150,16 @@ GameStates.PlayerTurn = function( game, shared ) {
             currentPhase = "attack";
             if(sprite.alive && attacksRemaining > 0){
                 sprite.alive = false;
+                var disabledrooms = [0,0,0];
+                enemyrooms.forEach(function(member){
+                    if(!member.alive && member.row != undefined){
+                        disabledrooms[member.row]++;
+                    }
+                }, this, true);
+                if(disabledrooms.indexOf(3)!=disabledrooms.lastIndexOf(3)){
+                    shared.winner = "player";
+                    game.state.start('GameOver');
+                }
                 var img = game.add.image(12,15,'dead');
                 img.scale.setTo(0.03,0.03);
                 sprite.addChild(img);
@@ -120,7 +170,9 @@ GameStates.PlayerTurn = function( game, shared ) {
                 activeRow = [];
                 graphics.clear();
                 rooms.forEach(function(member) {
-                    member.tint = 0xbbbbbb;
+                    if(member.row != undefined){
+                        member.tint = 0xbbbbbb;
+                    }
                 }, this, true);
                 currentPhase == "enemyattack";
                 game.canvas.style.cursor = "default";
@@ -163,11 +215,69 @@ GameStates.PlayerTurn = function( game, shared ) {
         enemygraphics.lineStyle(5, 0xFFFFFF, 0.8);
         enemygraphics.drawRect(Left, Top, Right-Left, 96);
         text.setText("Enemy Phase:\nAttacking");
-        attackPlayer();
+        attackPlayer(max);
     }
 
-    function attackPlayer(){
+    function attackPlayer(attacksLeft){
         console.log("attacking");
+        var targets = [];
+        while(attacksLeft > 0){
+            let target = rooms.getRandom();
+            if(!targets.includes(target) && target.alive && target.row != undefined){
+                targets.push(target);
+                attacksLeft--;
+            }
+            console.log(attacksLeft);
+        }
+        target = game.add.image(enemyrooms.x+238,enemyrooms.y-50,'target');
+        target.scale.setTo(0.08,0.08);
+        target.tint = 0xff0000;
+        target.alpha = 0;
+        var anim = game.add.tween(target).to({alpha:1}, 300, Phaser.Easing.Quadratic.InOut, true);
+        var tweens = [];
+        for(var i=0;i<targets.length;i++){
+            var tempTween = game.add.tween(target).to({x:targets[i].x+rooms.x, y:targets[i].y+rooms.y}, 500, Phaser.Easing.Quadratic.InOut);
+            tweens.push(tempTween);
+            tempTween.attacking = targets[i];
+            tempTween.onComplete.add(function(tweenTarg, etc)
+            {
+                var img = game.add.image(12,15,'dead');
+                img.scale.setTo(0.03,0.03);
+                etc.attacking.addChild(img);
+                //console.log(etc);
+                etc.attacking.alive = false;
+                var disabledrooms = [0,0,0];
+                enemyrooms.forEach(function(member){
+                    if(!member.alive && member.row != undefined){
+                        disabledrooms[member.row]++;
+                    }
+                }, this, true);
+                if(disabledrooms.indexOf(3)!=disabledrooms.lastIndexOf(3)){
+                    shared.winner = "computer";
+                    game.state.start('GameOver');
+                }
+            },this);
+            if(tweens[i-1] != undefined){
+                tweens[i-1].chain(tempTween);
+            }
+            console.log(tweens);
+        }
+        if(tweens.length>0){
+            tweens[0].start();
+        }
+        game.time.events.add(Phaser.Timer.SECOND, repairStage);
+    }
+
+    function repairStage(){
+        enemygraphics.clear();
+        var anim = game.add.tween(target).to({alpha:0}, 300, Phaser.Easing.Quadratic.InOut, true);
+        anim.onComplete.add(function(){
+            target.destroy();
+        })
+        console.log("repair");
+        currentPhase = "repair";
+        text.setStyle({ font: "25px Verdana", fill: "#004400", align: "center" });
+        text.setText("Player Phase:\nRepair damage");
     }
 
     function placeCannons(ship){
@@ -198,6 +308,7 @@ GameStates.PlayerTurn = function( game, shared ) {
         }
     }
 
+    var target;
     var hoverRow = [];
     var activeRow = [];
 
@@ -341,6 +452,10 @@ GameStates.makeGameOver = function( game, shared ) {
     
         create: function () {
     
+            let bg = game.add.sprite(0,0,'gameBG');
+            bg.anchor.setTo(0.5, 0.64);
+            bg.x = game.world.centerX;
+            bg.y = game.world.centerY;
             //	We've already preloaded our assets, so let's kick right into the Main Menu itself.
             //	Here all we're doing is playing some music and adding a picture and button
             //	Naturally I expect you to do something significantly better :)
@@ -358,11 +473,16 @@ GameStates.makeGameOver = function( game, shared ) {
             if(shared.lastscore>shared.highscore){
                 shared.highscore = shared.lastscore;
             }
-            var style = { font: "25px Verdana", fill: "#000000", align: "center" };
-            var text = game.add.text( game.world.centerX, 15,
-                "Game over! \nYour score: " + shared.lastscore+"\nYour high score: "+ shared.highscore + "\n\n Click to return to menu.",
+            var style = { font: "72px Verdana", fill: "#000000", align: "center" };
+            var text = game.add.text( game.world.centerX, game.world.centerY,
+                "",
                 style );
-            text.anchor.setTo( 0.5, 0.0 );
+                if(shared.winner == "player"){
+                    text.setText("Congratulations!\nYou sunk the enemy!");
+                }else{
+                    text.setText("Oh No!\nYou're sunk!");
+                }
+            text.anchor.setTo( 0.5, 0.5 );
         },
     
         update: function () {
