@@ -49,11 +49,11 @@ GameStates.makeMainMenu = function( game, shared ) {
             //game.scale.setResizeCallback(resize, this);
            // game.scale.onSizeChange.add(resize, this);
             
-            var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+            /* var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
             text = game.add.text( game.world.centerX, 15,
                 "Your high score: "+ shared.highscore,
                 style );
-            text.anchor.setTo( 0.5, 0.0 );
+            text.anchor.setTo( 0.5, 0.0 ); */
         },
     
         update: function () {

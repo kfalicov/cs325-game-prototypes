@@ -14,7 +14,9 @@ GameStates.PlayerTurn = function( game, shared ) {
     }
 
     function over(sprite){
-        if(currentPhase == "attack"){
+        if(currentPhase == "choose"){
+            game.canvas.style.cursor = "pointer";
+            //console.log(currentPhase);
             var left = sprite.left;
             var right = sprite.right;
             rooms.forEach(function(member) {
@@ -35,11 +37,13 @@ GameStates.PlayerTurn = function( game, shared ) {
             graphics.drawRect(left, sprite.top, right-left, sprite.height);
             sprite.tint = 0xaaffaa;
         }else if(currentPhase == "repair"){
+            game.canvas.style.cursor = "pointer";
             sprite.tint = 0xaaffaa;
         }
     }
 
     function out(sprite){
+        game.canvas.style.cursor = "default";
         rooms.forEach(function(member) {
                 member.tint = 0xbbbbbb;
         }, this, true);
@@ -49,9 +53,9 @@ GameStates.PlayerTurn = function( game, shared ) {
 
     function click(sprite){
         graphics.clear();
-        if(currentPhase == "attack"){
+        if(currentPhase == "choose"){
             if(activeRow.includes(sprite)){
-                console.log("active row clicked");
+                //console.log("active row clicked");
                 activeRow = [];
                 rooms.forEach(function(member) {
                     if(member.row == sprite.row) {
@@ -61,8 +65,9 @@ GameStates.PlayerTurn = function( game, shared ) {
                     }
                 }, this, true);
                 sprite.tint = 0xaaffaa;
-                
+                text.setText("Player Phase:\nChoose the ship deck you'll use!");
             }else{
+                attacksRemaining = 0;
                 activeRow = hoverRow;
                 activeTop = sprite.top;
                 activeLeft = sprite.left;
@@ -75,14 +80,121 @@ GameStates.PlayerTurn = function( game, shared ) {
                         if(member.right > activeRight){
                             activeRight = member.right;
                         }
+                        if(member.cannon == 1){
+                            attacksRemaining++;
+                        }
                     }else{
                         member.tint = 0xbbbbbb;
                     }
                 }, this, true);
+                text.setText("Player Phase:\nClick to attack the enemy!\nAttacks you'll get: "+attacksRemaining);
             }
         }
         else if(currentPhase == "repair" && !sprite.alive){
             sprite.alive = true;
+        }
+    }
+
+    function enemyover(sprite){
+        if((activeRow !== undefined && activeRow.length != 0)){
+            game.canvas.style.cursor = "pointer";
+        }
+    }
+
+    function enemyout(sprite){
+            game.canvas.style.cursor = "default";
+    }
+
+    function enemyclick(sprite){
+        if(currentPhase == "attack" || (activeRow !== undefined && activeRow.length != 0)){
+            currentPhase = "attack";
+            if(sprite.alive && attacksRemaining > 0){
+                sprite.alive = false;
+                var img = game.add.image(12,15,'dead');
+                img.scale.setTo(0.03,0.03);
+                sprite.addChild(img);
+                attacksRemaining--;
+                text.setText("Player Phase:\nClick to attack the enemy!\nAttacks remaining: "+attacksRemaining);
+            }
+            if(attacksRemaining == 0){
+                activeRow = [];
+                graphics.clear();
+                rooms.forEach(function(member) {
+                    member.tint = 0xbbbbbb;
+                }, this, true);
+                currentPhase == "enemyattack";
+                game.canvas.style.cursor = "default";
+                text.setStyle({ font: "25px Verdana", fill: "#440000", align: "center" });
+                text.setText("Enemy Phase:\nChoosing Floor");
+                game.time.events.add(Phaser.Timer.SECOND, enemyFloor, this);
+            }
+        }
+    }
+
+    function enemyFloor(){
+        let rowtotals = [0,0,0];
+        enemyrooms.forEach(function(member) {
+            let cannonCount = 0;
+            if(member.row != undefined && member.alive)
+                rowtotals[member.row] += member.cannon;
+        }, this, true);
+        let max = rowtotals[0];
+        let maxindex = 0;
+        for(var i = 1; i<rowtotals.length; i++){
+            if(rowtotals[i]>max){
+                maxindex = i;
+                max = rowtotals[i];
+            }
+        }
+        var Left = Number.MAX_SAFE_INTEGER;
+        var Right = Number.MIN_SAFE_INTEGER;
+        var Top
+        enemyrooms.forEach(function(member) {
+            if(member.row == maxindex){
+                Top = member.top;
+                if(member.left < Left){
+                    Left = member.left;
+                }
+                if(member.right > Right){
+                    Right = member.right;
+                }
+            }
+        }, this, true);
+        enemygraphics.lineStyle(5, 0xFFFFFF, 0.8);
+        enemygraphics.drawRect(Left, Top, Right-Left, 96);
+        text.setText("Enemy Phase:\nAttacking");
+        attackPlayer();
+    }
+
+    function attackPlayer(){
+        console.log("attacking");
+    }
+
+    function placeCannons(ship){
+        let numberOfCannons = 4;
+        let cannonsPlaced = 0;
+        while(cannonsPlaced < numberOfCannons){
+            let current = ship.getRandom();
+            if(current.cannon == 0){
+                current.cannon = 1;
+                cannonsPlaced++;
+                var img = game.add.image(10,32,'cannon');
+                img.scale.setTo(0.08,0.08);
+                current.addChild(img);
+            }
+        }
+    }
+
+    function placeEnemyCannons(ship){
+        let numberOfCannons = 4;
+        let cannonsPlaced = 0;
+        while(cannonsPlaced < numberOfCannons){
+            let current = ship.getRandom();
+            if(current.cannon == 0){
+                current.cannon = 1;
+                cannonsPlaced++;
+                console.log("cannon placed at "+ current.col, current.row);
+            }
         }
     }
 
@@ -93,10 +205,15 @@ GameStates.PlayerTurn = function( game, shared ) {
     var enemyrooms;
 
     var graphics;
-    var currentPhase = "attack";
+    var enemygraphics;
+
+    var currentPhase = "choose";
+    var attacksRemaining = 0;
+
     let activeLeft;
     let activeRight;
     let activeTop;
+    var text;
     return {
         
         create: function () {
@@ -131,33 +248,40 @@ GameStates.PlayerTurn = function( game, shared ) {
                     room.events.onInputOut.add(out, this);
                     room.events.onInputUp.add(click, this);
                     room.alive = true;
+                    room.cannon = 0;
                 }
             }
+            placeCannons(rooms);
             var enemyroom;
             for(var i = 0; i < x; i++){
                 for(var j = 0; j < y; j++){
                     enemyroom = enemyrooms.create(0, 0, 'hiddenroom');
                     enemyroom.row = i;
                     enemyroom.col = j;
-                    enemyroom.tint = 0xbbbbbb;
+                    enemyroom.tint = 0xffffff;
                     enemyroom.inputEnabled = true;
-                    enemyroom.events.onInputUp.add(click, this);
+                    enemyroom.events.onInputOver.add(enemyover, this);
+                    enemyroom.events.onInputOut.add(enemyout, this);
+                    enemyroom.events.onInputUp.add(enemyclick, this);
                     enemyroom.alive = true;
+                    enemyroom.cannon = 0;
                 }
             }
-           // rooms.createMultiple(9, 'rooms', ['inside_undamaged'], true);
+            placeEnemyCannons(enemyrooms);
             rooms.align(3, -1, room.width, room.height);
             rooms.addChildAt(ship,0);
+            ship.name == "ship";
             rooms.x = 100;
             rooms.y = 150;
 
             enemyrooms.align(3, -1, room.width, room.height);
             enemyrooms.addChildAt(badship,0);
-            enemyrooms.x = 500;
+            enemyrooms.x = 515;
             enemyrooms.y = 150;
 
             graphics = game.add.graphics(rooms.x,rooms.y);
-            var ocean = game.add.sprite(game.world.centerX,game.height-180,'ocean');
+            enemygraphics = game.add.graphics(enemyrooms.x,enemyrooms.y);
+            var ocean = game.add.sprite(game.world.centerX,game.height-140,'ocean');
             ocean.anchor.setTo(0.5,0);
             let scale = game.width/ocean.width;
             ocean.scale.setTo(scale,scale);
@@ -168,8 +292,16 @@ GameStates.PlayerTurn = function( game, shared ) {
             var enemyshiptween = game.add.tween(enemyrooms).to({y:'-24'}, 4000, Phaser.Easing.Quadratic.InOut, true, 500, -1, true);
 
             var highlighttween = game.add.tween(graphics).to({y:'-24'}, 4000, Phaser.Easing.Quadratic.InOut, true, 500, -1, true);
+            var enemyhighlighttween = game.add.tween(enemygraphics).to({y:'-24'}, 4000, Phaser.Easing.Quadratic.InOut, true, 500, -1, true);
+
             var oceantween = game.add.tween(backocean).to({y:'-48'}, 4000, Phaser.Easing.Quadratic.InOut, true, 0, -1, true);
             var oceantween = game.add.tween(ocean).to({y:'-38'}, 4000, Phaser.Easing.Quadratic.InOut, true, 100, -1, true);
+        
+            var style = { font: "25px Verdana", fill: "#004400", align: "center" };
+            text = game.add.text( game.world.centerX, 10,
+                "Player Phase:\nChoose the ship deck you'll use!", style );
+            text.anchor.setTo( 0.5, 0.0 );
+            text.lineSpacing = -10;
         },
 
         update: function () {
@@ -178,13 +310,20 @@ GameStates.PlayerTurn = function( game, shared ) {
                     member.tint = 0x111111;
                 }
             }, this, true);
+            enemyrooms.forEach(function(member) {
+                if(!member.alive){
+                    member.tint = 0xaaaaaa;
+                }else{
+                    member.tint = 0xffffff;
+                }
+            }, this, true);
             if(activeRow !== undefined && activeRow.length != 0){
                 //graphics.clear();
                 graphics.lineStyle(5, 0xFFFFFF, 0.8);
                 var sprite = activeRow[0];
                 graphics.drawRect(activeLeft, activeTop, activeRight-activeLeft, 96);
             }
-            console.log(activeRow);
+            //console.log(activeRow);
         },
 
         render: function () {
