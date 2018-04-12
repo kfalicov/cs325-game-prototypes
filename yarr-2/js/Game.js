@@ -319,12 +319,14 @@ GameStates.makeGame = function( game, shared ) {
         placetile.alpha = 0.5;
         placetile.tint = 0xff1111;
         var clone = game.add.sprite(0,0,sprite.key, sprite.frame);
+        clone.cost = sprite.cost;
         clone.adjacent = [-1,-1,-1,-1];
         clone.inputEnabled = true;
         clone.input.enableDrag(true);
         clone.events.onDragUpdate.add(onMove);
         clone.events.onDragStop.add(placeTile);
         clone.input.startDrag(this.input.activePointer);
+
     }
 
     //this enables the click and drag to place objects from the inventory
@@ -334,6 +336,7 @@ GameStates.makeGame = function( game, shared ) {
         placetile.alpha = 0.5;
         placetile.tint = 0xff1111;
         var clone = game.add.image(0,0,sprite.key);
+        clone.cost = sprite.cost;
         clone.inputEnabled = true;
         clone.input.enableDrag(true);
         clone.events.onDragUpdate.add(onMoveItem);
@@ -386,17 +389,33 @@ GameStates.makeGame = function( game, shared ) {
         //console.log("placing an item");
         sprite.x = 0;
         sprite.y = 0;
+        var style = {font:"16px Verdana", fill:"#ffffff", align: "center", stroke: "#aa2222", strokeThickness: 3}
+        var outputtext = game.add.text(pointer.x, pointer.y, "temp", style);
+        var textrise = game.add.tween(outputtext).to({y:'-48', alpha: 0}, 2000, Phaser.Easing.Quadratic.Out, true);
+        outputtext.anchor.setTo(0.5,1);
+        
         if(placetile.tint != 0xff1111){
-            currentarea.addChild(sprite);
-            //offset within cube because can have up to 3 items per cell
-            /* for(var i=0;i<currentarea.children;i++){
-                currentarea.children[i].x = 
-            } */
-            currentarea.inputEnabled=false;
-            //sprite.bringToTop();
-            //sprite.events.onDragStart.add(startMove);
-            //console.log(sprite.parent);
+            if(money>=sprite.cost){
+                money-=sprite.cost;
+                text.setText(money);
+                currentarea.addChild(sprite);
+                //offset within cube because can have up to 3 items per cell
+                /* for(var i=0;i<currentarea.children;i++){
+                    currentarea.children[i].x = 
+                } */
+                currentarea.inputEnabled=false;
+                //sprite.bringToTop();
+                //sprite.events.onDragStart.add(startMove);
+                //console.log(sprite.parent);
+                outputtext.stroke="#22aa22";
+                outputtext.setText("-"+sprite.cost);
+            }else{
+                outputtext.setText("can't afford");
+                console.log("can't place");
+                sprite.destroy();
+            }
         }else{
+            outputtext.setText("can't build here");
             console.log("can't place");
             currentarea = null;
             sprite.destroy();
@@ -517,26 +536,44 @@ GameStates.makeGame = function( game, shared ) {
     function placeTile(sprite, pointer){
         sprite.x = sprite.centerX-sprite.centerX%76;
         sprite.y = sprite.centerY-sprite.centerY%76;
+        var style = {font:"16px Verdana", fill:"#ffffff", align: "center", stroke: "#aa2222", strokeThickness: 3}
+        var outputtext = game.add.text(pointer.x, pointer.y, "temp", style);
+        var textrise = game.add.tween(outputtext).to({y:'-48', alpha: 0}, 2000, Phaser.Easing.Quadratic.Out, true);
+        outputtext.anchor.setTo(0.5,1);
+        
         if(placetile.tint != 0xff1111){
-            sprite.adjacent = currentarea.adjacent;
-            for(var i=0;i<4;i++){
-                if(sprite.adjacent[i] != -1){
-                    sprite.adjacent[i].adjacent[(i+2)%4] = sprite;
-                    checkNeighbors(sprite.adjacent[i]);
+            if(money>=sprite.cost){
+                money-=sprite.cost;
+                text.setText(money);
+                sprite.adjacent = currentarea.adjacent;
+                for(var i=0;i<4;i++){
+                    if(sprite.adjacent[i] != -1){
+                        sprite.adjacent[i].adjacent[(i+2)%4] = sprite;
+                        checkNeighbors(sprite.adjacent[i]);
+                    }
                 }
+                sprite.events.onDragStart.add(startMove);
+                rooms.add(sprite);
+                figure.position.setTo(getTopRightRoom().x+76, getTopRightRoom().y);
+                updateAreas(sprite);
+                outputtext.stroke="#22aa22";
+                outputtext.setText("-"+sprite.cost);
+            }else{
+                outputtext.setText("can't afford");
+                console.log("can't place");
+                sprite.destroy();
             }
-            sprite.events.onDragStart.add(startMove);
-            rooms.add(sprite);
-            figure.position.setTo(getTopRightRoom().x+76, getTopRightRoom().y);
-            figure.alpha = 1;
-            updateAreas(sprite);
         }else{
+            outputtext.setText("can't build here");
             console.log("can't place");
+            //money+=sprite.cost;
+            //text.setText(money);
             sprite.destroy();
         }
         //console.log(rooms);
         placetile.destroy();
         placeablearea.alpha = 0;
+        figure.alpha = 1;
         //console.log(sprite.adjacent);
     }
 
@@ -652,21 +689,25 @@ GameStates.makeGame = function( game, shared ) {
             var roombuy = game.add.sprite(200,10,'room_empty');
             roombuy.inputEnabled = true;
             roombuy.scale = {x:0.5,y:0.5};
+            roombuy.cost = 500;
             roombuy.events.onInputDown.add(build, this, 0, roombuy);
 
             var cannonbuy = game.add.sprite(248,10,'room_cannon');
             cannonbuy.inputEnabled = true;
             cannonbuy.scale = {x:0.5,y:0.5};
+            cannonbuy.cost = 100;
             cannonbuy.events.onInputDown.add(buy, this, 0, cannonbuy);
 
             var barrelbuy = game.add.sprite(296,10,'room_barrel');
             barrelbuy.inputEnabled = true;
             barrelbuy.scale = {x:0.5,y:0.5};
+            barrelbuy.cost = 50;
             barrelbuy.events.onInputDown.add(buy, this, 0, barrelbuy);
 
             var treasurebuy = game.add.sprite(344,10,'room_treasure');
             treasurebuy.inputEnabled = true;
             treasurebuy.scale = {x:0.5,y:0.5};
+            treasurebuy.cost = 150;
             treasurebuy.events.onInputDown.add(buy, this, 0, treasurebuy);
 
             rooms = game.add.group();
@@ -703,8 +744,6 @@ GameStates.makeGame = function( game, shared ) {
         },
 
         update: function () {
-            money++;
-            text.setText(money);
             rooms.forEach(function(member) {
                 if(!member.alive){
                     member.tint = 0x111111;
