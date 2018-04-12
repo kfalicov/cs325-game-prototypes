@@ -88,7 +88,7 @@ GameStates.makeGame = function( game, shared ) {
         //var canPlace = false;
         //console.log(placeablearea.length);
         var place = checkExists(placetile, rooms);
-        if(place >0 && rooms.children[place].tint == 0xffff11){
+        if(place > 0 && rooms.children[place].tint == 0xffff11){
             currentarea = rooms.children[place];
             placetile.tint = 0x11ff11;
         }else{
@@ -309,6 +309,48 @@ GameStates.makeGame = function( game, shared ) {
         return room;
     }
 
+    function attack(){
+        //console.log("attacked!");
+        rooms.forEach(function(member){
+            for(var i=0;i<member.children.length;i++){
+                if(member.children[i].key == "room_cannon"){
+                    //console.log("cannon found");
+                    var cannonball = game.add.sprite(member.children[i].world.x+member.children[i].centerX, member.children[i].world.y+member.children[i].centerY, 'shot');
+                    cannonball.anchor.setTo(0.5,0.5);
+                    var randomsprite = enemyrooms.getRandom();
+                    var targetx = randomsprite.world.x - randomsprite.width/2;
+                    var targety = randomsprite.centerY;
+                    var shottween1 = game.add.tween(cannonball).to({y:'-100'}, 300, Phaser.Easing.Quadratic.Out, false);
+                    var shottween2 = game.add.tween(cannonball).to({y:targety}, 300, Phaser.Easing.Quadratic.In, false);
+                    shottween1.chain(shottween2);
+                    shottween1.start();
+                    var shottween3 = game.add.tween(cannonball).to({x:targetx}, 630, "Linear", true, 0, 0, false);
+                    shottween3.onComplete.add(function(){
+                        cannonball.destroy();
+                        randomsprite.health--;
+                        randomsprite.tint-= 0x111919;
+                        if(randomsprite.health <= 0){
+                            //console.log("rekt");
+                            randomsprite.destroy();
+                            money+=200*iteration/2;
+                            text.setText(money);
+                            if(enemyrooms.children.length == 0){
+                                iteration++;
+                                console.log("ship destroyed");
+                                enemyrooms = cloneGroup(rooms);
+                                enemyrooms.pivot.setTo(1,0);
+                                enemyrooms.scale.x *=-1;
+                                enemyrooms.x = game.width;
+                                enemyrooms.addAll('health', 10 * iteration/2);
+                            }
+                        }
+                    })
+
+                }
+            }
+        });
+    }
+
     function drawWaves(){
         sinewave.clear();
         for (var i = 0; i < game.world.width; i++)
@@ -317,6 +359,8 @@ GameStates.makeGame = function( game, shared ) {
         }
         Phaser.ArrayUtils.rotateLeft(sin);
     }
+
+    var iteration = 1;
 
     var sinewave;
     var sin;
@@ -425,6 +469,7 @@ GameStates.makeGame = function( game, shared ) {
             enemyrooms.pivot.setTo(1,0);
             enemyrooms.scale.x *=-1;
             enemyrooms.x = game.width;
+            enemyrooms.addAll('health', 10);
 
             placetilelayer = game.add.group();
             placetilelayer.add(placetile);
@@ -446,7 +491,7 @@ GameStates.makeGame = function( game, shared ) {
             dollarsign.strokeThickness = "6";
             //text.anchor.setTo( 0, 0.0 );
             text.lineSpacing = -10;
-            
+            game.time.events.loop(Phaser.Timer.SECOND, attack, this);
         },
 
         update: function () {

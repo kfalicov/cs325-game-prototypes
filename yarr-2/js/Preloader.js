@@ -40,6 +40,8 @@ GameStates.makePreloader = function( game ) {
             game.load.image('room_figure', 'assets/room_figure.png');
             game.load.image('room_build', 'assets/room_build.png');
 
+            game.load.image('shot', 'assets/shot.png');
+
             game.load.image('room', 'assets/room.png');
             game.load.image('hiddenroom', 'assets/hiddenroom.png');
             game.load.image('ship', 'assets/ship.png');
