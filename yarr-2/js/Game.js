@@ -13,309 +13,20 @@ GameStates.makeGame = function( game, shared ) {
 
     }
 
-    function over(sprite){
-        if(currentPhase == "choose"){
-            game.canvas.style.cursor = "pointer";
-            //console.log(currentPhase);
-            var left = sprite.left;
-            var right = sprite.right;
-            rooms.forEach(function(member) {
-                if(member.row == sprite.row) {
-                    if(member.alive){
-                        member.tint = 0xffffff;
-                    }
-                    if(member.left < left){
-                        left = member.left;
-                    }
-                    if(member.right > right){
-                        right = member.right;
-                    }
-                    hoverRow.push(member);
-                }
-            }, this, true);
-            graphics.lineStyle(2, 0xFF0000, 0.8);
-            graphics.drawRect(left, sprite.top, right-left, sprite.height);
-            //sprite.tint = 0xaaffaa;
-        }else if(currentPhase == "repair"){
-            game.canvas.style.cursor = "pointer";
-            sprite.tint = 0xaaffaa;
-            graphics.lineStyle(2, 0x00ff00, 0.8);
-            graphics.drawRect(sprite.left, sprite.top, sprite.width, sprite.height);
-        }
-        else{
-            sprite.tint = 0xbbbbbb;
-        }
-    }
-
-    function out(sprite){
-        game.canvas.style.cursor = "default";
-        rooms.forEach(function(member) {
-            if(member.row != undefined){
-                member.tint = 0xbbbbbb;
-            }
-        }, this, true);
-        hoverRow = [];
-        graphics.clear();
-    }
-
-    function click(sprite){
-        graphics.clear();
-        if(currentPhase == "choose"){
-            if(activeRow.includes(sprite)){
-                //console.log("active row clicked");
-                activeRow = [];
-                rooms.forEach(function(member) {
-                    if(member.row != undefined){
-                        if(member.row == sprite.row) {
-                            member.tint = 0xffffff;
-                        }else{
-                            member.tint = 0xbbbbbb;
-                        }
-                    }
-                }, this, true);
-                sprite.tint = 0xaaffaa;
-                text.setText("Player Phase:\nChoose the ship deck you'll use!");
-            }else{
-                attacksRemaining = 0;
-                activeRow = hoverRow;
-                activeTop = sprite.top;
-                activeLeft = sprite.left;
-                activeRight = sprite.right;
-                rooms.forEach(function(member) {
-                    if(member.row == sprite.row) {
-                        if(member.left < activeLeft){
-                            activeLeft = member.left;
-                        }
-                        if(member.right > activeRight){
-                            activeRight = member.right;
-                        }
-                        if(member.cannon == 1 && member.alive){
-                            attacksRemaining++;
-                        }
-                    }else{
-                        if(member.row != undefined){
-                            member.tint = 0xbbbbbb;
-                        }
-                    }
-                }, this, true);
-                text.setText("Player Phase:\nClick to attack the enemy!\nAttacks you'll get: "+attacksRemaining);
-            }
-        }
-        else if(currentPhase == "repair" && !sprite.alive){
-            sprite.alive = true;
-            sprite.removeChildAt(sprite.children.length-1).destroy();
-            sprite.tint = 0xbbbbbb;
-            currentPhase = "enemyrepair";
-            text.setStyle({ font: "25px Verdana", fill: "#440000", align: "center" });
-            text.setText("Enemy Phase:\nRepair damage");
-            var numberOfInjuries = 0;
-            enemyrooms.forEach(function(member) {
-                if(!member.alive){
-                    numberOfInjuries++;
-                }
-            }, this, true);
-            if(numberOfInjuries>0){
-                game.time.events.add(Phaser.Timer.SECOND, function()
-                {
-                    var repaired = false;
-                    while(!repaired){
-                        var current = enemyrooms.getRandom();
-                        if(!current.alive){
-                            repaired = true;
-                            current.alive = true;
-                            current.removeChildAt(0);
-                            current.tint = 0xffffff;
-                        }
-                    }
-                    currentPhase = "choose";
-                    text.setStyle({ font: "25px Verdana", fill: "#004400", align: "center" });
-                    text.setText("Player Phase:\nChoose the ship deck you'll use!");
-                }, this);
-            }else{
-                currentPhase = "choose";
-                    text.setStyle({ font: "25px Verdana", fill: "#004400", align: "center" });
-                    text.setText("Player Phase:\nChoose the ship deck you'll use!");
-            }
-        }
-    }
-
-    function enemyover(sprite){
-        if((activeRow !== undefined && activeRow.length != 0)){
-            game.canvas.style.cursor = "pointer";
-        }
-    }
-
-    function enemyout(sprite){
-            game.canvas.style.cursor = "default";
-    }
-
-    function enemyclick(sprite){
-        if(currentPhase == "attack" || (activeRow !== undefined && activeRow.length != 0)){
-            currentPhase = "attack";
-            if(sprite.alive && attacksRemaining > 0){
-                sprite.alive = false;
-                var disabledrooms = [0,0,0];
-                enemyrooms.forEach(function(member){
-                    if(!member.alive && member.row != undefined){
-                        disabledrooms[member.row]++;
-                    }
-                }, this, true);
-                if(disabledrooms.indexOf(3)!=disabledrooms.lastIndexOf(3)){
-                    shared.winner = "player";
-                    game.state.start('GameOver');
-                }
-                var img = game.add.image(12,15,'dead');
-                img.scale.setTo(0.03,0.03);
-                sprite.addChild(img);
-                attacksRemaining--;
-                text.setText("Player Phase:\nClick to attack the enemy!\nAttacks remaining: "+attacksRemaining);
-            }
-            if(attacksRemaining == 0){
-                activeRow = [];
-                graphics.clear();
-                rooms.forEach(function(member) {
-                    if(member.row != undefined){
-                        member.tint = 0xbbbbbb;
-                    }
-                }, this, true);
-                currentPhase == "enemyattack";
-                game.canvas.style.cursor = "default";
-                text.setStyle({ font: "25px Verdana", fill: "#440000", align: "center" });
-                text.setText("Enemy Phase:\nChoosing Floor");
-                game.time.events.add(Phaser.Timer.SECOND, enemyFloor, this);
-            }
-        }
-    }
-
-    function enemyFloor(){
-        let rowtotals = [0,0,0];
-        enemyrooms.forEach(function(member) {
-            let cannonCount = 0;
-            if(member.row != undefined && member.alive)
-                rowtotals[member.row] += member.cannon;
-        }, this, true);
-        let max = rowtotals[0];
-        let maxindex = 0;
-        for(var i = 1; i<rowtotals.length; i++){
-            if(rowtotals[i]>max){
-                maxindex = i;
-                max = rowtotals[i];
-            }
-        }
-        var Left = Number.MAX_SAFE_INTEGER;
-        var Right = Number.MIN_SAFE_INTEGER;
-        var Top
-        enemyrooms.forEach(function(member) {
-            if(member.row == maxindex){
-                Top = member.top;
-                if(member.left < Left){
-                    Left = member.left;
-                }
-                if(member.right > Right){
-                    Right = member.right;
-                }
-            }
-        }, this, true);
-        enemygraphics.lineStyle(5, 0xFFFFFF, 0.8);
-        enemygraphics.drawRect(Left, Top, Right-Left, 96);
-        text.setText("Enemy Phase:\nAttacking");
-        attackPlayer(max);
-    }
-
-    function attackPlayer(attacksLeft){
-        console.log("attacking");
-        var targets = [];
-        while(attacksLeft > 0){
-            let target = rooms.getRandom();
-            if(!targets.includes(target) && target.alive && target.row != undefined){
-                targets.push(target);
-                attacksLeft--;
-            }
-            console.log(attacksLeft);
-        }
-        target = game.add.image(enemyrooms.x+238,enemyrooms.y-50,'target');
-        target.scale.setTo(0.08,0.08);
-        target.tint = 0xff0000;
-        target.alpha = 0;
-        var anim = game.add.tween(target).to({alpha:1}, 300, Phaser.Easing.Quadratic.InOut, true);
-        var tweens = [];
-        for(var i=0;i<targets.length;i++){
-            var tempTween = game.add.tween(target).to({x:targets[i].x+rooms.x, y:targets[i].y+rooms.y}, 500, Phaser.Easing.Quadratic.InOut);
-            tweens.push(tempTween);
-            tempTween.attacking = targets[i];
-            tempTween.onComplete.add(function(tweenTarg, etc)
-            {
-                var img = game.add.image(12,15,'dead');
-                img.scale.setTo(0.03,0.03);
-                etc.attacking.addChild(img);
-                //console.log(etc);
-                etc.attacking.alive = false;
-                var disabledrooms = [0,0,0];
-                rooms.forEach(function(member){
-                    if(!member.alive && member.row != undefined){
-                        disabledrooms[member.row]++;
-                    }
-                }, this, true);
-                if(disabledrooms.indexOf(3)!=disabledrooms.lastIndexOf(3)){
-                    shared.winner = "computer";
-                    game.state.start('GameOver');
-                }
-            },this);
-            if(tweens[i-1] != undefined){
-                tweens[i-1].chain(tempTween);
-            }
-            console.log(tweens);
-        }
-        if(tweens.length>0){
-            tweens[0].start();
-        }
-        game.time.events.add(Phaser.Timer.SECOND, repairStage);
-    }
-
-    function repairStage(){
-        enemygraphics.clear();
-        var anim = game.add.tween(target).to({alpha:0}, 300, Phaser.Easing.Quadratic.InOut, true);
-        anim.onComplete.add(function(){
-            target.destroy();
-        })
-        console.log("repair");
-        currentPhase = "repair";
-        text.setStyle({ font: "25px Verdana", fill: "#004400", align: "center" });
-        text.setText("Player Phase:\nRepair damage");
-    }
-
-    function placeCannons(ship){
-        let numberOfCannons = 4;
-        let cannonsPlaced = 0;
-        while(cannonsPlaced < numberOfCannons){
-            let current = ship.getRandom();
-            if(current.cannon == 0){
-                current.cannon = 1;
-                cannonsPlaced++;
-                var img = game.add.image(10,32,'cannon');
-                img.scale.setTo(0.08,0.08);
-                current.addChild(img);
-            }
-        }
-    }
-
-    function placeEnemyCannons(ship){
-        let numberOfCannons = 4;
-        let cannonsPlaced = 0;
-        while(cannonsPlaced < numberOfCannons){
-            let current = ship.getRandom();
-            if(current.cannon == 0){
-                current.cannon = 1;
-                cannonsPlaced++;
-                //console.log("cannon placed at "+ current.col, current.row);
-            }
-        }
+    function cloneGroup(group){
+        var result = game.add.group();
+        group.forEach(function(member){
+            var clone = game.add.sprite(member.x, member.y, member.key, member.frame);
+            result.add(clone);
+        });
+        return result;
     }
 
     //this enables the click and drag to place objects from the inventory
     function build(sprite){
         //placeablearea = game.add.group();
         placetile = game.add.sprite(0,0,'room_build');
+        placetilelayer.add(placetile);
         placetile.alpha = 0.5;
         placetile.tint = 0xff1111;
         var clone = game.add.sprite(0,0,sprite.key, sprite.frame);
@@ -333,6 +44,7 @@ GameStates.makeGame = function( game, shared ) {
     function buy(sprite){
         //placeablearea = game.add.group();
         placetile = game.add.sprite(0,0,'room_build');
+        placetilelayer.add(placetile);
         placetile.alpha = 0.5;
         placetile.tint = 0xff1111;
         var clone = game.add.image(0,0,sprite.key);
@@ -392,6 +104,9 @@ GameStates.makeGame = function( game, shared ) {
         var style = {font:"16px Verdana", fill:"#ffffff", align: "center", stroke: "#aa2222", strokeThickness: 3}
         var outputtext = game.add.text(pointer.x, pointer.y, "temp", style);
         var textrise = game.add.tween(outputtext).to({y:'-48', alpha: 0}, 2000, Phaser.Easing.Quadratic.Out, true);
+        textrise.onComplete.add(function(){
+            outputtext.destroy();
+        });
         outputtext.anchor.setTo(0.5,1);
         
         if(placetile.tint != 0xff1111){
@@ -498,6 +213,7 @@ GameStates.makeGame = function( game, shared ) {
     function startMove(sprite, pointer){
         figure.alpha = 0;
         placetile = game.add.sprite(0,0,'room_build');
+        placetilelayer.add(placetile);
         placetile.alpha = 0.5;
         placetile.tint = 0xff1111;
         //sprite.adjacent = [-1,-1,-1,-1];
@@ -539,6 +255,9 @@ GameStates.makeGame = function( game, shared ) {
         var style = {font:"16px Verdana", fill:"#ffffff", align: "center", stroke: "#aa2222", strokeThickness: 3}
         var outputtext = game.add.text(pointer.x, pointer.y, "temp", style);
         var textrise = game.add.tween(outputtext).to({y:'-48', alpha: 0}, 2000, Phaser.Easing.Quadratic.Out, true);
+        textrise.onComplete.add(function(){
+            outputtext.destroy();
+        });
         outputtext.anchor.setTo(0.5,1);
         
         if(placetile.tint != 0xff1111){
@@ -590,6 +309,21 @@ GameStates.makeGame = function( game, shared ) {
         return room;
     }
 
+    function drawWaves(){
+        sinewave.clear();
+        for (var i = 0; i < game.world.width; i++)
+        {
+            sinewave.rect(i, game.height, 2,sin[i]*siny-90, '#0d7dbbbb');
+        }
+        Phaser.ArrayUtils.rotateLeft(sin);
+    }
+
+    var sinewave;
+    var sin;
+    var sinx=0;//the x as input for y
+    var siny=0;//the function y=cos(x)
+    var dx=0.01;//the strength of the current(higher is more wavy);
+
     var placetile;
 
     var target;
@@ -600,6 +334,7 @@ GameStates.makeGame = function( game, shared ) {
     var figure;
     var placeablearea;
     var currentarea;
+    var placetilelayer;
     //compass directions and how they affect adjacency
     var directions = [{x:0, y:-1}, {x:1, y:0}, {x:0, y:1}, {x:-1, y:0}];
 
@@ -625,61 +360,6 @@ GameStates.makeGame = function( game, shared ) {
             bg.x = game.world.centerX;
             bg.y = game.world.centerY;
             //player = game.add.sprite(0,0);
-            
-
-            var backocean = game.add.sprite(game.world.centerX,game.height-220,'ocean');
-            backocean.anchor.setTo(0.5,0);
-            
-            enemyrooms = game.add.group();
-            var room;
-            var x = 3;
-            var y = 3;
-            var spritewidth = 64, spriteheight = 64;
-            //var ship = game.add.sprite(-49,-68, 'ship');
-            var badship = game.add.sprite(-46,-68, 'badship');
-            badship.anchor.setTo(1,0);
-            badship.scale.x*=-1;
-            
-            var enemyroom;
-            for(var i = 0; i < x; i++){
-                for(var j = 0; j < y; j++){
-                    enemyroom = enemyrooms.create(0, 0, 'hiddenroom');
-                    enemyroom.row = i;
-                    enemyroom.col = j;
-                    enemyroom.tint = 0xffffff;
-                    enemyroom.inputEnabled = true;
-                    enemyroom.events.onInputOver.add(enemyover, this);
-                    enemyroom.events.onInputOut.add(enemyout, this);
-                    enemyroom.events.onInputUp.add(enemyclick, this);
-                    enemyroom.alive = true;
-                    enemyroom.cannon = 0;
-                }
-            }
-            placeEnemyCannons(enemyrooms);
-            
-            //ship.name == "ship";
-
-            enemyrooms.addChildAt(badship,0);
-            enemyrooms.x = 515;
-            enemyrooms.y = 150;
-
-            //graphics = game.add.graphics(rooms.x,rooms.y);
-            enemygraphics = game.add.graphics(enemyrooms.x,enemyrooms.y);
-            var ocean = game.add.sprite(game.world.centerX,game.height-140,'ocean');
-            ocean.anchor.setTo(0.5,0);
-            let scale = game.width/ocean.width;
-            ocean.scale.setTo(scale,scale);
-            backocean.scale.setTo(scale,scale);
-            backocean.scale.x*=-1;
-
-            //var shiptween = game.add.tween(rooms).to({y:'-24'}, 4000, Phaser.Easing.Quadratic.InOut, true, 500, -1, true);
-            var enemyshiptween = game.add.tween(enemyrooms).to({y:'-24'}, 4000, Phaser.Easing.Quadratic.InOut, true, 500, -1, true);
-
-            //var highlighttween = game.add.tween(graphics).to({y:'-24'}, 4000, Phaser.Easing.Quadratic.InOut, true, 500, -1, true);
-            var enemyhighlighttween = game.add.tween(enemygraphics).to({y:'-24'}, 4000, Phaser.Easing.Quadratic.InOut, true, 500, -1, true);
-
-            var oceantween = game.add.tween(backocean).to({y:'-48'}, 4000, Phaser.Easing.Quadratic.InOut, true, 0, -1, true);
-            var oceantween = game.add.tween(ocean).to({y:'-38'}, 4000, Phaser.Easing.Quadratic.InOut, true, 100, -1, true);
         
             placeablearea = game.add.group();
             placetile = game.add.sprite(0,0,'room_build');
@@ -710,6 +390,13 @@ GameStates.makeGame = function( game, shared ) {
             treasurebuy.cost = 150;
             treasurebuy.events.onInputDown.add(buy, this, 0, treasurebuy);
 
+            var shopicons = game.add.group();
+            shopicons.addMultiple([roombuy,cannonbuy,barrelbuy,treasurebuy]);
+            shopicons.forEach(function(member){
+                var price = game.add.text(member.centerX, member.bottom, "$"+member.cost, {font:"12px Verdana", fill:"#ffbb00", fontWeight:"bold"});
+                price.anchor.setTo(0.5,0);
+            });
+
             rooms = game.add.group();
             var firstroom = game.add.sprite(100,400,'room_rudder');
             firstroom.x = firstroom.centerX-firstroom.centerX%76;
@@ -734,6 +421,24 @@ GameStates.makeGame = function( game, shared ) {
             figure = game.add.sprite(getTopRightRoom().x+76, getTopRightRoom().y, 'room_figure');
             updateAreas(firstroom);
 
+            enemyrooms = cloneGroup(rooms);
+            enemyrooms.pivot.setTo(1,0);
+            enemyrooms.scale.x *=-1;
+            enemyrooms.x = game.width;
+
+            placetilelayer = game.add.group();
+            placetilelayer.add(placetile);
+            var oceantween = game.add.tween(rooms).to({y:'-18'}, 3500, Phaser.Easing.Quadratic.InOut, true, 0, -1, true);
+            var oceantween = game.add.tween(placeablearea).to({y:'-18'}, 3500, Phaser.Easing.Quadratic.InOut, true, 0, -1, true);
+            var oceantween = game.add.tween(figure).to({y:'-18'}, 3500, Phaser.Easing.Quadratic.InOut, true, 0, -1, true);
+            var oceantween = game.add.tween(placetilelayer).to({y:'-18'}, 3500, Phaser.Easing.Quadratic.InOut, true, 0, -1, true);
+
+            sinewave = game.add.bitmapData(game.world.width,600);
+            sinewave.addToWorld();
+            //generate a sin with variable amplitude for the sin(the amplitude is cosine dependent)
+            var data = game.math.sinCosGenerator(game.world.width, 15, 1, 2);//length, sinAmplitude, cosAmplitude, frequency)
+            sin = data.sin;
+
             var style = { font: "25px Verdana", fill: "#ffffff", fontWeight: "bold"};
             text = game.add.text( 50, 8, money, style );
             text.strokeThickness="6";
@@ -741,27 +446,14 @@ GameStates.makeGame = function( game, shared ) {
             dollarsign.strokeThickness = "6";
             //text.anchor.setTo( 0, 0.0 );
             text.lineSpacing = -10;
+            
         },
 
         update: function () {
-            rooms.forEach(function(member) {
-                if(!member.alive){
-                    member.tint = 0x111111;
-                }
-            }, this, true);
-            enemyrooms.forEach(function(member) {
-                if(!member.alive){
-                    member.tint = 0xaaaaaa;
-                }else{
-                    member.tint = 0xffffff;
-                }
-            }, this, true);
-            if(activeRow !== undefined && activeRow.length != 0){
-                //graphics.clear();
-                graphics.lineStyle(5, 0xFFFFFF, 0.8);
-                var sprite = activeRow[0];
-                graphics.drawRect(activeLeft, activeTop, activeRight-activeLeft, 96);
-            }
+
+            sinx+=dx;
+            siny= Math.cos(sinx);
+            drawWaves();
             /* if(this.input.activePointer.targetObject !== null){
                 if(this.input.activePointer.targetObject.isDragged == true){
                     var currentSprite= this.input.activePointer.targetObject.sprite;
