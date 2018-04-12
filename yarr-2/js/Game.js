@@ -80,6 +80,9 @@ GameStates.makeGame = function( game, shared ) {
         rooms.forEach(function(member){
             if(member.children.length <= 3 && member != rooms.children[0]){
                 member.tint = 0xffff11;
+                for(var i=0;i<member.children.length;i++){
+                    member.children[i].tint = 0xffff11;
+                }
             }
         });
         //figure.alpha = 0;
@@ -142,6 +145,9 @@ GameStates.makeGame = function( game, shared ) {
         rooms.forEach(function(member){
             if(member.occupant == undefined || member.occupant == null){
                 member.tint = 0xffffff;
+            }
+            for(var i=0;i<member.children.length;i++){
+                member.children[i].tint = 0xffffff;
             }
         });
     }
@@ -328,7 +334,10 @@ GameStates.makeGame = function( game, shared ) {
                     shottween3.onComplete.add(function(){
                         cannonball.destroy();
                         randomsprite.health--;
-                        randomsprite.tint-= 0x111919;
+                        var str = Phaser.Color.RGBtoString(0,Math.floor(255/maxhealth), Math.floor(255/maxhealth), 1, '#');
+                        var hex = parseInt(str.replace(/^#/, ''), 16);
+                        randomsprite.tint-= hex;
+                        console.log(hex);
                         if(randomsprite.health <= 0){
                             //console.log("rekt");
                             randomsprite.destroy();
@@ -341,7 +350,8 @@ GameStates.makeGame = function( game, shared ) {
                                 enemyrooms.pivot.setTo(1,0);
                                 enemyrooms.scale.x *=-1;
                                 enemyrooms.x = game.width;
-                                enemyrooms.addAll('health', 10 * iteration/2);
+                                maxhealth = 10*iteration/2;
+                                enemyrooms.addAll('health', maxhealth);
                             }
                         }
                     })
@@ -361,6 +371,7 @@ GameStates.makeGame = function( game, shared ) {
     }
 
     var iteration = 1;
+    var maxhealth;
 
     var sinewave;
     var sin;
@@ -469,7 +480,8 @@ GameStates.makeGame = function( game, shared ) {
             enemyrooms.pivot.setTo(1,0);
             enemyrooms.scale.x *=-1;
             enemyrooms.x = game.width;
-            enemyrooms.addAll('health', 10);
+            maxhealth = 10;
+            enemyrooms.addAll('health', maxhealth);
 
             placetilelayer = game.add.group();
             placetilelayer.add(placetile);
