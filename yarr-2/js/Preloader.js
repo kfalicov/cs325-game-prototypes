@@ -82,7 +82,7 @@ GameStates.makePreloader = function( game ) {
                 game.state.start('MainMenu');
             } */
             ready = true;
-            game.state.start('Game');
+            game.state.start('MainMenu');
         }
     
     };

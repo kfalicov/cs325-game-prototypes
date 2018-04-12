@@ -22,7 +22,7 @@ GameStates.makeMainMenu = function( game, shared ) {
 
         //	And start the actual game
         //game.state.add( 'Game', GameStates.Battle( game, shared ) );
-        game.state.start('PlayerTurn');
+        game.state.start('Game');
 
     }
     
