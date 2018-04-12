@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>Yarr!</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+
+	<script src="js/phaser.min.js"></script>
+	<!-- Boot.js must come first since it creates the BasicGame object
+	that stores all the states. -->
+	<script src="js/Boot.js"></script>
+	<script src="js/Preloader.js"></script>
+	<script src="js/MainMenu.js"></script>
+	<script src="js/Game.js"></script>
+	<!-- main.js must come last since it references the other ones. -->
+	<script src="js/main.js"></script>
+	<script language="javascript">
+		function toggle(showHideDiv, switchTextDiv) {
+			var ele = document.getElementById(showHideDiv);
+			var text = document.getElementById(switchTextDiv);
+			if(ele.style.display == "block") {
+				ele.style.display = "none";
+				text.style.backgroundColor= "#4eb251";
+				text.innerHTML = "+ Show Readme";
+			}
+			else {
+				ele.style.display = "block";
+				text.style.backgroundColor = "#c14b4b";
+				text.innerHTML = "- Hide Readme";
+			}
+		} 
+	  </script>
+<style></style>
+
+</head>
+<body>
+<div id="game" style="width:100%; max-width:1200px;"></div>
+<div id="objective">Destroy two floors of the enemy ship to win!</div>
+<div id="divtoggle" onclick="toggle('readme','divtoggle')">+ Show Readme</div>
+<div id="readme" style = "display: none; width:100%; max-width:1200px;">
+<h2>Yarr!</h2>
+
+<ul>
+<li><strong>Originality:</strong>
+What is original about your game?<br>
+Yarr! features an AI opponent and a pirate-themed strategy game where the location of the opponent's cannons are unknown.
+</li>
+
+<li><strong>Technical Merit:</strong>
+What is interesting about your game technology?<br>
+I made a turn-based system that loops and has AI interactions. I used tween animations for fancy effects, and the ship grid system is a single array in which elements store an internal row and column, to locate where they are relative to other pieces.
+</li>
+
+<li><strong>Prototype Postmortem:</strong>
+What did you learn from this prototype?<br>
+I learned how to use phaser's timers to make events happen in sequence, and I used tween.onComplete to do the same but with associated animations.<br>
+What was the easiest or hardest part of making it?<br>
+The hardest part was making the opponent aim at the player. I had to chain tweens, but the number of chained tweens was variable as it could be anywhere from 0-4. Instead of doing many if statements I wanted to call the onComplete function of the tween to start the next tween and also to kill the target square. The problem with this was the scope of the tween didn't include the sprite the tween was aiming at, so I had to do some fancy editing to give the tween access to that. I also did eventually find out how to have an indeterminate amount of tweens chained together via for loop.
+</li>
+
+<li><strong>Prototype Assets:</strong>
+Did you make your prototype assets from scratch? Did you borrow them? Cite your sources here.
+<ul>
+<li>Ship Rooms: self made</li>
+<li>Game Background: <a href="https://en.wikipedia.org/wiki/Ocean">Google Images, Wikipedia</a></li>
+<li>Ocean foreground: <a href="http://moziru.com/explore/Splash%20clipart%20ocean%20water/#go_post_3997_sea-clipart-2.png">Google Images</a></li>
+<li>Cannons: <a href="https://www.pinterest.com/pin/833447474763693619/">Google Images, Pinterest</a></li>
+<li>Treasure: <a href="https://www.pinterest.com/pin/430797520580537457/">Google Images, Pinterest</a></li>
+<li>Barrels: <a href="https://www.rubylane.com/item/61838-990747x2094/Oak-Barrels-for-Gunpowder-Whiskey">Google Images, sale site</a></li>
+<li>Skull: <a href="https://openclipart.org/detail/211414/skull-and-crossbones">openclipart</a></li>
+<li>Crosshair: <a href="https://www.onlinewebfonts.com/icon/521963">Online Web Fonts</a></li>
+<li>Menu Background: <a href="http://moon-guard.wikia.com/wiki/Pirate_King%27s_War">here</a></li>
+<li>Ships: self made with wood textures from Google</li>
+</ul>
+</li>
+
+<li><strong>Prototype Closest Other Game:</strong>
+Which other game most closely resembles your game? If you are borrowing code from a Phaser Example, you must say so here. If you borrow code from elsewhere, you must say so here.
+<ul>
+<li>My original analog prototype was the source of my theme and my gameplay. I changed it from a player vs. player game into a player vs. computer, which required timed events and internal game states.  Unfortunately I ran out of time before I could implement all of the features of my analog prototype, so the gunpowder barrel mechanic and treasure chest mechanic are unimplemented.  The gunpowder barrel, when hit, would randomly destroy additional rooms of the ship.  The treasure, when hit, would be taken by the other player and could be cashed in to repair anytime. I do have assets for those and now that the framework is implemented I will easily be able to add the mechanics.</li>
+</ul>
+</li>
+
+<li><strong>High Concept:</strong>
+A one-sentence summary of your game.<br>
+Two short-on-staff pirate ships must do battle until one of them is sunk, with a random assortment of cannons.
+</li>
+
+<li><strong>Theme:</strong>
+State which of the Storymatic themes you used.<br>
+This was optional this week but I took inspiration from the Pirates theme from a couple of weeks ago.
+</li>
+
+<li><strong>Mandated Variety:</strong>
+State which input, randomness, genre, and play style you used in this prototype.<br>
+Mouse input, a bit of randomness, turn-based strategy, and the Competitor play style.
+</li>
+
+<li><strong>Prototype Goal:</strong>
+What game mechanic is this prototype evaluating?<br>
+The mechanic this prototype is evaluating is turn-based combat and "hidden info" mechanic, where the player must figure things out to win.
+</li>
+
+<li><strong>Player Experience Goals:</strong>
+What experience do you want players to have when playing your game?<br>
+I want players to learn how to figure out where the opponent's cannons are and disable them effectively, and I want them to have to think a bit before acting.
+</li>
+
+<li><strong>Gameplay:</strong>
+A paragraph describing the actions the player can perform, the system dynamics, and the core mechanic. Include a concise explanation of the prototype’s inputs and their expected effects (how to play). You can also describe game play that is not in the prototype. You may include mock-up images for parts of the game not in the prototype.<br>
+The only controls the player has are mouse inputs. There are two clickable zones on the screen, which are your ship and your enemy's ship. The prompts at the top of the screen tell you what phase of the battle you're in, with green text meaning your turn, and red text meaning the enemy's turn. Play starts with selecting the deck of the ship that will be used in the attack, and the cannons on that floor contribute to the number of hits you get. After both the player and the computer attack, the game enters the repair state, in which one single room can be repaired. Cannons in disabled rooms are not counted in the total number of attacks a deck has. After the repair phase, the attack phase begins again.  The objective is to destroy two decks of the player's ship.
+</li>
+
+<li><strong>Strategies:</strong>
+What player strategies do you expect will be effective at playing this game?<br>
+The computer always chooses the floor with the highest cannon count. Attacking that floor increases the chances of disabling the enemy cannons, which can turn the game into a win!
+</li>
+
+<li><strong>Story/Setting/Premise:</strong>
+A paragraph about the world your game is set in and who the characters are. What makes the game world and its occupants unique and interesting? Do the tokens represent something? If the game has a backstory, mention it here. If the game is abstract, then say so. How will the dramatic tension interact with the gameplay tension?<br>
+You are the captain of a fearsome pirate ship! However, due to budget cuts to Planned Piratehood, your ship only has enough crew to staff one deck at a time. Because you're a fearless and cutthroat leader, this doesn't matter to you! You can take on enemy ships with only one deck at a time! You also happen to have very skilled repairmen on board who can fix small sections of your ship very quickly!
+</li>
+
+<li><strong>Target Audience:</strong>
+A single sentence that describes the demographic you're trying to reach.<br>
+People who enjoy Tic-Tac-Toe
+</li>
+
+<li><strong>Play Time:</strong>
+How long does your game take to play?<br>
+About 5 minutes.
+</li>
+
+</ul>
+</div>
+</body>
+</html>
