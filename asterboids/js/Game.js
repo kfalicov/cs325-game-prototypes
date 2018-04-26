@@ -3,10 +3,11 @@
 GameStates.makeGame = function( game, shared ) {
     // Create your own variables.
     //let bouncy = null;
-    let boidsAmount = 10;
+    let boidsAmount = 15;
     let shipSprite;
     let asteroids;
     let flock;
+    let newboids = [];
     
     let startingEnemies = 3;
     let incrementEnemies = 1;
@@ -72,8 +73,10 @@ GameStates.makeGame = function( game, shared ) {
             x = Math.random() * game.width;
             y = (Math.round(Math.random()) * (game.height+asteroid.height))-asteroid.height/2;
         }
-        asteroid.size = tier;
-        asteroid.health = tier*2;
+        asteroid.data = {
+            'size': tier,
+            'health': tier*2,
+        }
         asteroid.scale.setTo(tier,tier);
         asteroid.position.set(x,y);
         asteroid.anchor.setTo(0.5,0.5);
@@ -86,8 +89,10 @@ GameStates.makeGame = function( game, shared ) {
 
     function createChildAsteroid(tier, x, y){
         let asteroid = game.add.sprite(0,0,'asteroid');
-        asteroid.size = tier;
-        asteroid.health = tier*2;
+        asteroid.data = {
+            'size': tier,
+            'health': tier*2,
+        }
         asteroid.scale.setTo(tier,tier);
         asteroid.position.set(x,y);
         asteroid.anchor.setTo(0.5,0.5);
@@ -97,27 +102,31 @@ GameStates.makeGame = function( game, shared ) {
         game.physics.arcade.velocityFromRotation(randomAngle, randomVelocity, asteroid.body.velocity);
 
     }
-
-    //  Called if the bullet hits one of the veg sprites
+function checklife(asteroid){
+    //console.log(asteroid.exists);
+    return true;
+}
+    //  Called if an asteroid is hit by a boid
 function collisionHandler (asteroid, boid) {
-
-    asteroid.health--;
-    boid.kill();
-    if(asteroid.health<=0){
-        asteroid.kill();
-        if(asteroid.size>1){
-            createChildAsteroid(asteroid.size-1, asteroid.position.x, asteroid.position.y);
-            createChildAsteroid(asteroid.size-1, asteroid.position.x, asteroid.position.y);
-        }
-        else{
-            var bird = new Boid(game, asteroid.position.x, asteroid.position.y, flock);
-            bird.target = shipSprite;
-            bird.scale.setTo(0.5,0.5);
-            flock.add(bird);
-            var bird = new Boid(game, asteroid.position.x, asteroid.position.y, flock);
-            bird.target = shipSprite;
-            bird.scale.setTo(0.5,0.5);
-            flock.add(bird);
+    if(asteroid.exists){
+        asteroid.data.health--;
+        boid.kill();
+        if(asteroid.data.health<=0){
+            asteroid.kill();
+            if(asteroid.data.size>1){
+                createChildAsteroid(asteroid.data.size-1, asteroid.position.x, asteroid.position.y);
+                createChildAsteroid(asteroid.data.size-1, asteroid.position.x, asteroid.position.y);
+            }
+            else{
+                console.log("new boid");
+                for(var i=0;i<asteroidSpawnSize+2;i++){
+                    let bird = new Boid(game, game.rnd.between(asteroid.position.x,asteroid.position.x+asteroid.width), game.rnd.between(asteroid.position.y,asteroid.position.y+asteroid.height), flock);
+                    bird.target = shipSprite;
+                    bird.scale.setTo(0.5,0.5);
+                    flock.add(bird);
+                    //bird.tint = 0xff0000;
+                }
+            }
         }
     }
 }
@@ -152,10 +161,12 @@ function killPlayer(){
                 //maxVelocity+=5;
                 incrementEnemies = Math.min(8, incrementEnemies+0.2);
                 //console.log(incrementEnemies);
-                var bird = new Boid(game, game.world.randomX, game.world.randomY, flock);
-                bird.target = shipSprite;
-                bird.scale.setTo(0.5,0.5);
-                flock.add(bird);
+                for(var i=0;i<asteroidSpawnSize;i++){
+                    var bird = new Boid(game, game.rnd.between(shipSprite.position.x,shipSprite.position.x+shipSprite.width),game.rnd.between(shipSprite.position.y,shipSprite.position.y+shipSprite.height), flock);
+                    bird.target = shipSprite;
+                    bird.scale.setTo(0.5,0.5);
+                    flock.add(bird);
+                }
             }, this);
             timer.start();
 
@@ -165,15 +176,19 @@ function killPlayer(){
         },
     
         update: function () {
-            game.physics.arcade.overlap(asteroids, flock, collisionHandler, null, this);
-            game.physics.arcade.overlap(shipSprite, asteroids, killPlayer, null, this);
+            game.physics.arcade.overlap(asteroids, flock, collisionHandler, checklife, this);
+           // game.physics.arcade.overlap(shipSprite, asteroids, killPlayer, null, this);
             this.checkPlayerInput();
             checkBoundaries(shipSprite);
-            for(var i = 0, len = asteroids.children.length; i<len; i++)
-            {
-                let current = asteroids.children[i];
-                checkBoundaries(current);
+            if(newboids !== undefined && newboids.length != 0){
+                //var boid = newboids[0];
+                flock.add(newboids[0]);
+                flock.add(newboids[1]);
+                newboids = [];
             }
+            asteroids.forEachExists(function(member){
+                checkBoundaries(member);
+            });
         },
 
         initGraphics: function () {
