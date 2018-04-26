@@ -112,22 +112,30 @@ function collisionHandler (asteroid, boid) {
         else{
             var bird = new Boid(game, asteroid.position.x, asteroid.position.y, flock);
             bird.target = shipSprite;
+            bird.scale.setTo(0.5,0.5);
+            flock.add(bird);
+            var bird = new Boid(game, asteroid.position.x, asteroid.position.y, flock);
+            bird.target = shipSprite;
+            bird.scale.setTo(0.5,0.5);
             flock.add(bird);
         }
     }
+}
+function killPlayer(){
+    game.state.start('GameOver');
 }
     return {
         create: function () {
             this.initGraphics();
             this.initPhysics();
             this.initKeyboard();
+            shipSprite.tint = 0x00ff00;
             flock = game.add.group();
             asteroids = game.add.group();
             asteroids.enableBody = true;
             asteroids.physicsBodyType = Phaser.Physics.ARCADE;
             for(var i=0;i<boidsAmount;i++){
                 var bird = new Boid(game, game.world.randomX, game.world.randomY, flock);
-                bird.scale.setTo(0.5,0.5);
                 bird.target = shipSprite;
                 flock.add(bird);
             }
@@ -144,6 +152,10 @@ function collisionHandler (asteroid, boid) {
                 //maxVelocity+=5;
                 incrementEnemies = Math.min(8, incrementEnemies+0.2);
                 //console.log(incrementEnemies);
+                var bird = new Boid(game, game.world.randomX, game.world.randomY, flock);
+                bird.target = shipSprite;
+                bird.scale.setTo(0.5,0.5);
+                flock.add(bird);
             }, this);
             timer.start();
 
@@ -154,6 +166,7 @@ function collisionHandler (asteroid, boid) {
     
         update: function () {
             game.physics.arcade.overlap(asteroids, flock, collisionHandler, null, this);
+            game.physics.arcade.overlap(shipSprite, asteroids, killPlayer, null, this);
             this.checkPlayerInput();
             checkBoundaries(shipSprite);
             for(var i = 0, len = asteroids.children.length; i<len; i++)
@@ -218,7 +231,15 @@ GameStates.makeGameOver = function( game, shared ) {
     return {
     
         create: function () {
-    
+            game.input.onDown.add( function() {
+                //game.state.add( 'Game', GameStates.makeGame( game, shared ) );
+                game.state.start('MainMenu');
+            }, this );
+            var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+            var text = game.add.text( game.world.centerX, game.world.centerY,
+                "You died. \n Click to return to menu.",
+                style );
+            text.anchor.setTo( 0.5, 0.0 );
         },
     
         update: function () {

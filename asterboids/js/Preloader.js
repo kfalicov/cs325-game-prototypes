@@ -30,6 +30,7 @@ GameStates.makePreloader = function( game ) {
             game.load.atlas('playButton', 'assets/play_button.png', 'assets/play_button.json');
             game.load.atlas('sprites', 'assets/sprites.png', 'assets/sprites.json');
             game.load.image('boid', 'assets/boid.png');
+            game.load.image('asteroid', 'assets/asteroid.png');
             //game.load.audio('titleMusic', ['assets/Poppers and Prosecco.mp3']);
             //	+ lots of other required assets here
         },

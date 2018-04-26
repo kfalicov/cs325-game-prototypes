@@ -19,6 +19,7 @@ GameStates.makeMainMenu = function( game, shared ) {
         //music.stop();
 
         //	And start the actual game
+        game.state.add( 'Game', GameStates.makeGame( game, shared ) );
         game.state.start('Game');
 
     }
@@ -34,17 +35,23 @@ GameStates.makeMainMenu = function( game, shared ) {
             //music = game.add.audio('titleMusic');
             //music.play();
     
-            let titlebg = game.add.sprite(0, 0, 'titlePage');
-            titlebg.x += (game.width-titlebg.width)/2;
-            console.log(game.width);
+            //let titlebg = game.add.sprite(0, 0, 'titlePage');
+            //titlebg.x += (game.width-titlebg.width)/2;
+            //console.log(game.width);
             playButton = game.add.button( game.width/2, game.height*2/3, 'playButton', startGame, null, 'over', 'out', 'down');
             playButton.x -= playButton.width/2;
 
-            var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
-            var text = game.add.text( game.world.centerX, 15,
-                "Your high score: "+ shared.highscore,
+            var style = { font: "72px Courier", fill: "#ffffff", align: "center" };
+            var text = game.add.text( game.world.centerX, game.world.centerY-25,
+                "Aster-boids",
                 style );
-            text.anchor.setTo( 0.5, 0.0 );
+
+                var style2 = { font: "12px Courier", fill: "#ffffff", align: "center" };
+            var text2 = game.add.text( game.world.centerX, game.world.centerY,
+                "Arrow keys to rotate and accelerate\nyou cannot shoot, use your fleet as a shield\ndon't get hit",
+                style2 );
+            text.anchor.setTo( 0.5, 1 );
+            text2.anchor.setTo( 0.5, 0 );
         },
     
         update: function () {
