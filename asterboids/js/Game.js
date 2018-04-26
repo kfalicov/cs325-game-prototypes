@@ -8,6 +8,9 @@ GameStates.makeGame = function( game, shared ) {
     let asteroids;
     let flock;
     let newboids = [];
+
+    let score = 0;
+    let scoretext;
     
     let startingEnemies = 3;
     let incrementEnemies = 1;
@@ -102,6 +105,7 @@ GameStates.makeGame = function( game, shared ) {
         game.physics.arcade.velocityFromRotation(randomAngle, randomVelocity, asteroid.body.velocity);
 
     }
+    //unnecessary check
 function checklife(asteroid){
     //console.log(asteroid.exists);
     return true;
@@ -113,6 +117,8 @@ function collisionHandler (asteroid, boid) {
         boid.kill();
         if(asteroid.data.health<=0){
             asteroid.kill();
+            score+=asteroid.data.size*100;
+            scoretext.setText(score);
             if(asteroid.data.size>1){
                 createChildAsteroid(asteroid.data.size-1, asteroid.position.x, asteroid.position.y);
                 createChildAsteroid(asteroid.data.size-1, asteroid.position.x, asteroid.position.y);
@@ -131,6 +137,7 @@ function collisionHandler (asteroid, boid) {
     }
 }
 function killPlayer(){
+    shared.lastscore = score;
     game.state.start('GameOver');
 }
     return {
@@ -170,6 +177,9 @@ function killPlayer(){
             }, this);
             timer.start();
 
+            var style = { font: "25px Courier", fill: "#ffffff", align: "left" };
+            scoretext = game.add.text(20, 20, score, style);
+
             //flock.setAll('target',shipSprite);
             flock.setAll('scale.x',0.5);
             flock.setAll('scale.y',0.5);
@@ -177,7 +187,7 @@ function killPlayer(){
     
         update: function () {
             game.physics.arcade.overlap(asteroids, flock, collisionHandler, checklife, this);
-           // game.physics.arcade.overlap(shipSprite, asteroids, killPlayer, null, this);
+            game.physics.arcade.overlap(shipSprite, asteroids, killPlayer, null, this);
             this.checkPlayerInput();
             checkBoundaries(shipSprite);
             if(newboids !== undefined && newboids.length != 0){
@@ -246,6 +256,8 @@ GameStates.makeGameOver = function( game, shared ) {
     return {
     
         create: function () {
+            var style = { font: "25px Courier", fill: "#ffffff", align: "left" };
+            var scoretext = game.add.text(20, 20, shared.lastscore, style);
             game.input.onDown.add( function() {
                 //game.state.add( 'Game', GameStates.makeGame( game, shared ) );
                 game.state.start('MainMenu');
@@ -282,8 +294,8 @@ var Boid = function(game, x, y, group, options) {
     
     this.radius = Math.sqrt(this.height * this.height + this.width * this.width) / 2;
   
-    this.desiredSeparation = 40.0;
-    this.maxDistance = this.radius * 10.0;
+    this.desiredSeparation = 50.0;
+    this.maxDistance = this.radius * 15.0;
     
   };
 

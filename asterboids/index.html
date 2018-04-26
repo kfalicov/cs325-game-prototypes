@@ -42,19 +42,19 @@
 <ul>
 <li><strong>Originality:</strong>
 What is original about your game?<br>
-Yarr! features an AI opponent and a pirate-themed strategy game where the location of the opponent's cannons are unknown.
+Never before has there been an asteroids game where the objective is to smash your ships into the asteroids! Featuring a complete absence of weaponry, this game boasts a defensive and avoidance-focused approach to the arcade classic.
 </li>
 
 <li><strong>Technical Merit:</strong>
 What is interesting about your game technology?<br>
-I made a turn-based system that loops and has AI interactions. I used tween animations for fancy effects, and the ship grid system is a single array in which elements store an internal row and column, to locate where they are relative to other pieces.
+I used boid interactions to make the fleet movement more interesting. The boids try to remain separate from each other while tracking the mothership. This makes it easier to assess the size of the fleet.
 </li>
 
 <li><strong>Prototype Postmortem:</strong>
 What did you learn from this prototype?<br>
-I learned how to use phaser's timers to make events happen in sequence, and I used tween.onComplete to do the same but with associated animations.<br>
+I learned a lot about boids and their interactions.<br>
 What was the easiest or hardest part of making it?<br>
-The hardest part was making the opponent aim at the player. I had to chain tweens, but the number of chained tweens was variable as it could be anywhere from 0-4. Instead of doing many if statements I wanted to call the onComplete function of the tween to start the next tween and also to kill the target square. The problem with this was the scope of the tween didn't include the sprite the tween was aiming at, so I had to do some fancy editing to give the tween access to that. I also did eventually find out how to have an indeterminate amount of tweens chained together via for loop.
+I was running into many problems with phaser's collision handling. My goal was to make the boids group and the asteroids group collide and destroy them, and spawn new boids if the smallest asteroids were destroyed. However, the program's collision wasn't accurately testing for dead asteroids and boids, so there was a weird infinite loop when asteroids were destroyed.
 </li>
 
 <li><strong>Prototype Assets:</strong>
@@ -70,52 +70,57 @@ Which other game most closely resembles your game? If you are borrowing code fro
 <ul>
 <li>I reused a lot of the code from my <a href="buffalo-wings">Buffalo Wings</a> game, specifically the spawning mechanism, timed difficulty increases, and the looping through world edges mechanic. My original design was to have the player control the entire flock by gradually influencing the densest cluster of them, but I ran out of time to implement that and ended up just coding a "leader" for the sprites to follow. I think it makes the game more difficult as well.</li>
 <li><a href="http://phaser-swarm.herokuapp.com/">Phaser Swarm</a></li>
+<li><a href="https://phaser.io/examples/v2/arcade-physics/angular-acceleration">Phaser Examples: Angular Acceleration</a></li>
+<li><a href="https://phaser.io/examples/v2/arcade-physics/group-vs-group">Phaser Examples: Group vs. Group</a></li>
 </ul>
 </li>
 
 <li><strong>High Concept:</strong>
 A one-sentence summary of your game.<br>
-Two short-on-staff pirate ships must do battle until one of them is sunk, with a random assortment of cannons.
+A fleet of ships has to defend their mothership with their lives as they navigate a dangerous asteroid field.
 </li>
 
 <li><strong>Theme:</strong>
 State which of the Storymatic themes you used.<br>
-This was optional this week but I took inspiration from the Pirates theme from a couple of weeks ago.
+N/A
 </li>
 
 <li><strong>Mandated Variety:</strong>
 State which input, randomness, genre, and play style you used in this prototype.<br>
-Mouse input, a bit of randomness, turn-based strategy, and the Competitor play style.
+Keyboard input, a lot of randomness, overhead shooter(?) genre, Collector/Achiever play style.
 </li>
 
 <li><strong>Prototype Goal:</strong>
 What game mechanic is this prototype evaluating?<br>
-The mechanic this prototype is evaluating is turn-based combat and "hidden info" mechanic, where the player must figure things out to win.
+The mechanic this prototype is evaluating is boid interactions and the concept of controlling a group of boids.
 </li>
 
 <li><strong>Player Experience Goals:</strong>
 What experience do you want players to have when playing your game?<br>
-I want players to learn how to figure out where the opponent's cannons are and disable them effectively, and I want them to have to think a bit before acting.
+I want players to have fun with this new take on a classic.
 </li>
 
 <li><strong>Gameplay:</strong>
 A paragraph describing the actions the player can perform, the system dynamics, and the core mechanic. Include a concise explanation of the prototype’s inputs and their expected effects (how to play). You can also describe game play that is not in the prototype. You may include mock-up images for parts of the game not in the prototype.<br>
-The only controls the player has are mouse inputs. There are two clickable zones on the screen, which are your ship and your enemy's ship. The prompts at the top of the screen tell you what phase of the battle you're in, with green text meaning your turn, and red text meaning the enemy's turn. Play starts with selecting the deck of the ship that will be used in the attack, and the cannons on that floor contribute to the number of hits you get. After both the player and the computer attack, the game enters the repair state, in which one single room can be repaired. Cannons in disabled rooms are not counted in the total number of attacks a deck has. After the repair phase, the attack phase begins again.  The objective is to destroy two decks of the player's ship.
+The inputs a player can make are the left and right arrow keys to rotate, and the up arrow to thrust.
+The ship travels with lots of acceleration and slippery physics, making it feel more like it's in space.
+A fleet of smaller ships always attempts to return to the mothership, and these can be used to destroy asteroids by directing them at the obstacles. Originally the gameplay was going to involve the player controlling one of the boids in the flock and influencing their movement that way.  The expected result of the low friction and acceleration is that navigation is tricky and imprecise, and it requires careful use of the fleet to form a shield.
+Boids spawn every time asteroids spawn, and a few also spawn when the smallest asteroids are destroyed. The game spawns boids at a loss, you will never have enough boids to destroy all asteroids on screen after the beginning.
 </li>
 
 <li><strong>Strategies:</strong>
 What player strategies do you expect will be effective at playing this game?<br>
-The computer always chooses the floor with the highest cannon count. Attacking that floor increases the chances of disabling the enemy cannons, which can turn the game into a win!
+If the mothership flies around the borders of the game, the boids will attempt to follow it. With enough momentum you can create a "wall" of boids traveling from one side of the screen to the other.
 </li>
 
 <li><strong>Story/Setting/Premise:</strong>
 A paragraph about the world your game is set in and who the characters are. What makes the game world and its occupants unique and interesting? Do the tokens represent something? If the game has a backstory, mention it here. If the game is abstract, then say so. How will the dramatic tension interact with the gameplay tension?<br>
-You are the captain of a fearsome pirate ship! However, due to budget cuts to Planned Piratehood, your ship only has enough crew to staff one deck at a time. Because you're a fearless and cutthroat leader, this doesn't matter to you! You can take on enemy ships with only one deck at a time! You also happen to have very skilled repairmen on board who can fix small sections of your ship very quickly!
+Navigating an asteroid field is tricky. Good thing you've got a swarm of tough small ships! They can severely damage asteroids by colliding into them, and if they collide with the smallest ones you even get enough resources to build more!
 </li>
 
 <li><strong>Target Audience:</strong>
 A single sentence that describes the demographic you're trying to reach.<br>
-People who enjoy Tic-Tac-Toe
+Arcade nostalgics who are looking for a challenge
 </li>
 
 <li><strong>Play Time:</strong>
