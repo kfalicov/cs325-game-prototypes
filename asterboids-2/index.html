@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>Aster-boids</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+
+	<script src="js/phaser.min.js"></script>
+	<!-- Boot.js must come first since it creates the BasicGame object
+	that stores all the states. -->
+	<script src="js/Boot.js"></script>
+	<script src="js/Preloader.js"></script>
+	<script src="js/MainMenu.js"></script>
+	<script src="js/Game.js"></script>
+	<!-- main.js must come last since it references the other ones. -->
+	<script src="js/main.js"></script>
+	<script language="javascript">
+		function toggle(showHideDiv, switchTextDiv) {
+			var ele = document.getElementById(showHideDiv);
+			var text = document.getElementById(switchTextDiv);
+			if(ele.style.display == "block") {
+				ele.style.display = "none";
+				text.style.backgroundColor= "#4eb251";
+				text.innerHTML = "+ Show Readme";
+			}
+			else {
+				ele.style.display = "block";
+				text.style.backgroundColor = "#c14b4b";
+				text.innerHTML = "- Hide Readme";
+			}
+		} 
+	  </script>
+<style></style>
+
+</head>
+<body>
+<div id="game" style="width:100%; max-width:1600px;"></div>
+<div id="divtoggle" onclick="toggle('readme','divtoggle')">+ Show Readme</div>
+<div id="readme" style = "display: none; width:100%; max-width:1200px;">
+<h2>Aster-boids Revision</h2>
+
+<ul>
+<li><strong>Updates:</strong>
+<ul>
+<li>Asteroids now have circular colliders (makes it feel much more precise, no getting killed by empty space)</li>
+<li>Sounds!</li>
+<li>Updated instructions on menu</li>
+<li>Fixed wrap around, border is much tighter and there's no way for players to be fully offscreen now</li>
+<li>Asteroids now indicate their health with sprite tint</li>
+</ul>
+</li>
+
+<li><strong>Check out the original!</strong>
+<ul>
+<li><a href="../asterboids">Here</a></li>
+</ul>
+</li>
+
+</ul>
+</div>
+</body>
+</html>
